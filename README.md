@@ -32,7 +32,7 @@ posts.load(postId).subscribe { status ->
   when (status) {
     Empty   -> showEmptyCard()
     Loading -> showLoading()
-    Loaded  -> populateCard(post)
+    Loaded  -> populateCard(status.value)
     Failed  -> showErrorCard(status.error)
   }
 }
