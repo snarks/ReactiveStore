@@ -2,9 +2,9 @@
 Containers with Observable callbacks.
 
 This library provides 2 main types:
-- [ReactiveCache](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.caches/index.html)
+- [ReactiveCache](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.caches/-reactive-cache/index.html)
   for loading & storing a single value
-- [ReactiveStore](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.stores/)
+- [ReactiveStore](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.stores/-reactive-store/index.html)
   for loading & storing multiple values
 
 ## Example
