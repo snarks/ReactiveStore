@@ -19,7 +19,7 @@ import io.reactivex.Single
 
 
 /**
- * A function the transitions one [LoadStatus] to the next
+ * A function that transitions one [LoadStatus] to the next
  *
  * If the return value of this function is the same as `currentStatus`, it means no change should happen in the store.
  *

@@ -22,7 +22,9 @@ import io.reactivex.Observable
 
 
 /**
- * An observable container that stores a single value
+ * An observable container that loads and stores a single value
+ *
+ * @param T The type of the content to be stored in this cache.
  */
 interface ReactiveCache<T : Any> {
 

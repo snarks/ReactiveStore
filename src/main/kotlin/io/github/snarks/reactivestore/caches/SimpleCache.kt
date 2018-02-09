@@ -32,9 +32,11 @@ import io.reactivex.subjects.BehaviorSubject
 /**
  * A basic implementation of [ReactiveCache]
  *
- * @param loader           The default loader used to retrieve this cache's value
- * @param updateScheduler  A **single-threaded** scheduler where the update operations will be executed on
- * @param publishScheduler An optional scheduler where the contents of this cache will be emitted
+ * This implementation relies on [updateScheduler] for its thread safety. So single thread schedulers are preferred if
+ * this cache will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
+ * altogether. _(The default value,_ `Schedulers.single()`, _should be adequate in most cases.)_
+ *
+ * The [publishScheduler] is an optional scheduler which will be used to emit items from the [observe] method.
  */
 class SimpleCache<T : Any>(
 		loader: SingleSource<out T>,

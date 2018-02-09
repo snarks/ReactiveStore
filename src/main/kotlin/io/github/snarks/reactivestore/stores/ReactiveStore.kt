@@ -22,9 +22,12 @@ import io.reactivex.Observable
 
 
 /**
- * An observable container that stores multiple values
+ * An observable container that loads and stores multiple values
  *
  * Each `value` put in the store has an associated `key` which can be used to retrieve said value.
+ *
+ * @param K The type of the key used to retrieve the contents of this store.
+ * @param V The type of the contents to be stored.
  */
 interface ReactiveStore<K : Any, V : Any> {
 

@@ -35,9 +35,12 @@ import io.reactivex.subjects.PublishSubject
 /**
  * A basic implementation of [ReactiveStore]
  *
- * @param loaderSupplier   The supplier that will provide the default loader for a given key
- * @param updateScheduler  A **single-threaded** scheduler where the update operations will be executed on
- * @param publishScheduler An optional scheduler where the contents of this cache will be emitted
+ * This implementation relies on [updateScheduler] for its thread safety. So single thread schedulers are preferred if
+ * this store will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
+ * altogether. _(The default value,_ `Schedulers.single()`, _should be adequate in most cases.)_
+ *
+ * The [publishScheduler] is an optional scheduler which will be used to emit items from the [observe], [contents] and
+ * [keys] methods.
  */
 class SimpleStore<K : Any, V : Any>(
 		private val loaderSupplier: (key: K) -> SingleSource<V>,
