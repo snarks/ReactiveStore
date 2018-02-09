@@ -28,13 +28,16 @@ import io.reactivex.Single
  * - [Loaded]
  */
 sealed class LoadStatus<out T : Any> {
+	/** The latest stable status of the cache or store */
 	abstract val lastStableStatus: StableStatus<T>
 }
 
+/** Statuses where there's no pending action in the store or cache */
 sealed class StableStatus<out T : Any> : LoadStatus<T>() {
 	override val lastStableStatus: StableStatus<T> get() = this
 }
 
+/** Statuses that are meant to be just temporary */
 sealed class PendingStatus<out T : Any> : LoadStatus<T>()
 
 

@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Updaters - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.utils</a>&nbsp;/&nbsp;<a href=".">Updaters</a><br/>
+<br/>
+<h1>Updaters</h1>
+<code><span class="keyword">object </span><span class="identifier">Updaters</span></code>
+<p>Provides commonly used <a href="../-updater.html">Updater</a> implementations</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="auto.html">auto</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">auto</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Updaters$auto(io.reactivex.SingleSource((io.github.snarks.reactivestore.utils.Updaters.auto.T)))/customLoader">customLoader</span><span class="symbol">:</span>&nbsp;<span class="identifier">SingleSource</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Returns an <a href="../-updater.html">Updater</a> that will load a new value if it doesn't exist yet</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="cancel-loading.html">cancelLoading</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">cancelLoading</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Returns an <a href="../-updater.html">Updater</a> that will cancel loading</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="compare-and-update.html">compareAndUpdate</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">compareAndUpdate</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Updaters$compareAndUpdate(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), io.reactivex.Single(()), )))/expectedStatus">expectedStatus</span><span class="symbol">:</span>&nbsp;<a href="../-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.utils.Updaters$compareAndUpdate(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), io.reactivex.Single(()), )))/updater">updater</span><span class="symbol">:</span>&nbsp;<a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Makes the given <a href="compare-and-update.html#io.github.snarks.reactivestore.utils.Updaters$compareAndUpdate(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), io.reactivex.Single(()), )))/updater">updater</a> execute only if <a href="compare-and-update.html#io.github.snarks.reactivestore.utils.Updaters$compareAndUpdate(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate.T)), io.reactivex.Single(()), )))/expectedStatus">expectedStatus</a> is the same as the current load status</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="reload.html">reload</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">reload</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Updaters$reload(io.reactivex.SingleSource((io.github.snarks.reactivestore.utils.Updaters.reload.T)))/customLoader">customLoader</span><span class="symbol">:</span>&nbsp;<span class="identifier">SingleSource</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Returns an <a href="../-updater.html">Updater</a> that will load a new value, replacing any existing value</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="reset-failure.html">resetFailure</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">resetFailure</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Returns an <a href="../-updater.html">Updater</a> that will reset a failed status to the previous stable status</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="set.html">set</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Updaters$set(io.github.snarks.reactivestore.utils.Updaters.set.T)/value">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Returns an <a href="../-updater.html">Updater</a> that will set the store to the given value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

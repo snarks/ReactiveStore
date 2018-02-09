@@ -1,0 +1,19 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SimpleStore.<init> - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.stores</a>&nbsp;/&nbsp;<a href="index.html">SimpleStore</a>&nbsp;/&nbsp;<a href=".">&lt;init&gt;</a><br/>
+<br/>
+<h1>&lt;init&gt;</h1>
+<code><span class="identifier">SimpleStore</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.stores.SimpleStore$<init>(kotlin.Function1((io.github.snarks.reactivestore.stores.SimpleStore.K, io.reactivex.SingleSource((io.github.snarks.reactivestore.stores.SimpleStore.V)))), io.reactivex.Scheduler, io.reactivex.Scheduler)/loaderSupplier">loaderSupplier</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">key</span><span class="symbol">:</span>&nbsp;<span class="identifier">K</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">SingleSource</span><span class="symbol">&lt;</span><span class="identifier">V</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.stores.SimpleStore$<init>(kotlin.Function1((io.github.snarks.reactivestore.stores.SimpleStore.K, io.reactivex.SingleSource((io.github.snarks.reactivestore.stores.SimpleStore.V)))), io.reactivex.Scheduler, io.reactivex.Scheduler)/updateScheduler">updateScheduler</span><span class="symbol">:</span>&nbsp;<span class="identifier">Scheduler</span>&nbsp;<span class="symbol">=</span>&nbsp;Schedulers.single()<span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.stores.SimpleStore$<init>(kotlin.Function1((io.github.snarks.reactivestore.stores.SimpleStore.K, io.reactivex.SingleSource((io.github.snarks.reactivestore.stores.SimpleStore.V)))), io.reactivex.Scheduler, io.reactivex.Scheduler)/publishScheduler">publishScheduler</span><span class="symbol">:</span>&nbsp;<span class="identifier">Scheduler</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code>
+<p>A basic implementation of <a href="../-reactive-store/index.html">ReactiveStore</a></p>
+<p>This implementation relies on <a href="-init-.html#io.github.snarks.reactivestore.stores.SimpleStore$<init>(kotlin.Function1((io.github.snarks.reactivestore.stores.SimpleStore.K, io.reactivex.SingleSource((io.github.snarks.reactivestore.stores.SimpleStore.V)))), io.reactivex.Scheduler, io.reactivex.Scheduler)/updateScheduler">updateScheduler</a> for its thread safety. So single thread schedulers are preferred if
+this store will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
+altogether. <emph>(The default value,</emph> <code>Schedulers.single()</code>, <emph>should be adequate in most cases.)</emph></p>
+<p>The <a href="-init-.html#io.github.snarks.reactivestore.stores.SimpleStore$<init>(kotlin.Function1((io.github.snarks.reactivestore.stores.SimpleStore.K, io.reactivex.SingleSource((io.github.snarks.reactivestore.stores.SimpleStore.V)))), io.reactivex.Scheduler, io.reactivex.Scheduler)/publishScheduler">publishScheduler</a> is an optional scheduler which will be used to emit items from the <a href="observe.html">observe</a>, <a href="contents.html">contents</a> and
+<a href="keys.html">keys</a> methods.</p>
+</BODY>
+</HTML>

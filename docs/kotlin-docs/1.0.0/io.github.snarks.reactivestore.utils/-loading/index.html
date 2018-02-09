@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Loading - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.utils</a>&nbsp;/&nbsp;<a href=".">Loading</a><br/>
+<br/>
+<h1>Loading</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Loading</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-pending-status.html"><span class="identifier">PendingStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>The status when a cache or store is currently loading something</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">Loading</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Loading$<init>(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Loading.T)), io.reactivex.Single((io.github.snarks.reactivestore.utils.Loading.T)))/prev">prev</span><span class="symbol">:</span>&nbsp;<a href="../-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.utils.Loading$<init>(io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.utils.Loading.T)), io.reactivex.Single((io.github.snarks.reactivestore.utils.Loading.T)))/loader">loader</span><span class="symbol">:</span>&nbsp;<span class="identifier">Single</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span></code><code><span class="identifier">Loading</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.utils.Loading$<init>(io.github.snarks.reactivestore.utils.StableStatus((io.github.snarks.reactivestore.utils.Loading.T)), io.reactivex.Single((io.github.snarks.reactivestore.utils.Loading.T)))/lastStableStatus">lastStableStatus</span><span class="symbol">:</span>&nbsp;<a href="../-stable-status/index.html"><span class="identifier">StableStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.utils.Loading$<init>(io.github.snarks.reactivestore.utils.StableStatus((io.github.snarks.reactivestore.utils.Loading.T)), io.reactivex.Single((io.github.snarks.reactivestore.utils.Loading.T)))/loader">loader</span><span class="symbol">:</span>&nbsp;<span class="identifier">Single</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span></code>
+<p>The status when a cache or store is currently loading something</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="last-stable-status.html">lastStableStatus</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">lastStableStatus</span><span class="symbol">: </span><a href="../-stable-status/index.html"><span class="identifier">StableStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>The latest stable status of the cache or store</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="loader.html">loader</a></td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">loader</span><span class="symbol">: </span><span class="identifier">Single</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

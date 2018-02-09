@@ -1,0 +1,18 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SimpleCache.<init> - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.caches</a>&nbsp;/&nbsp;<a href="index.html">SimpleCache</a>&nbsp;/&nbsp;<a href=".">&lt;init&gt;</a><br/>
+<br/>
+<h1>&lt;init&gt;</h1>
+<code><span class="identifier">SimpleCache</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches.SimpleCache$<init>(io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.SimpleCache.T)), io.reactivex.Scheduler, io.reactivex.Scheduler)/loader">loader</span><span class="symbol">:</span>&nbsp;<span class="identifier">SingleSource</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.caches.SimpleCache$<init>(io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.SimpleCache.T)), io.reactivex.Scheduler, io.reactivex.Scheduler)/updateScheduler">updateScheduler</span><span class="symbol">:</span>&nbsp;<span class="identifier">Scheduler</span>&nbsp;<span class="symbol">=</span>&nbsp;Schedulers.single()<span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.caches.SimpleCache$<init>(io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.SimpleCache.T)), io.reactivex.Scheduler, io.reactivex.Scheduler)/publishScheduler">publishScheduler</span><span class="symbol">:</span>&nbsp;<span class="identifier">Scheduler</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code>
+<p>A basic implementation of <a href="../-reactive-cache/index.html">ReactiveCache</a></p>
+<p>This implementation relies on <a href="-init-.html#io.github.snarks.reactivestore.caches.SimpleCache$<init>(io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.SimpleCache.T)), io.reactivex.Scheduler, io.reactivex.Scheduler)/updateScheduler">updateScheduler</a> for its thread safety. So single thread schedulers are preferred if
+this cache will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
+altogether. <emph>(The default value,</emph> <code>Schedulers.single()</code>, <emph>should be adequate in most cases.)</emph></p>
+<p>The <a href="-init-.html#io.github.snarks.reactivestore.caches.SimpleCache$<init>(io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.SimpleCache.T)), io.reactivex.Scheduler, io.reactivex.Scheduler)/publishScheduler">publishScheduler</a> is an optional scheduler which will be used to emit items from the <a href="observe.html">observe</a> method.</p>
+</BODY>
+</HTML>
