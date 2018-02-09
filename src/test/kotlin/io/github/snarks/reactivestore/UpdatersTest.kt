@@ -1,5 +1,6 @@
-package io.github.snarks.reactivestore.utils
+package io.github.snarks.reactivestore
 
+import io.github.snarks.reactivestore.utils.*
 import io.github.snarks.reactivestore.utils.Updaters.auto
 import io.github.snarks.reactivestore.utils.Updaters.cancelLoading
 import io.github.snarks.reactivestore.utils.Updaters.compareAndUpdate

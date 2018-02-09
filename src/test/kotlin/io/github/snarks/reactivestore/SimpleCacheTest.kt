@@ -3,32 +3,17 @@ package io.github.snarks.reactivestore
 import io.github.snarks.reactivestore.caches.*
 import io.github.snarks.reactivestore.utils.*
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import org.junit.Test
 
 class SimpleCacheTest {
 
 	@Test
-	fun update() {
-		val loader = Single.just("Hello")
-		val cache = SimpleCache(loader)
-		val test = cache.observe().test()
+	fun update_withUpdaters() {
+		val loader = Single.just("Hello").withPrettyToString()
+		val cache = SimpleCache(loader, Schedulers.trampoline())
 
-		cache.update(Updaters.auto())
-		Thread.sleep(50)
-		cache.update(Updaters.set("Hi"))
-		cache.update(Updaters.reload())
-		Thread.sleep(50)
-		cache.update(Updaters.set(null))
-		cache.update(Updaters.auto())
-		Thread.sleep(50)
-		cache.update(Updaters.auto())
-		Thread.sleep(50)
-		cache.update(Updaters.reload())
-		cache.update(Updaters.cancelLoading())
-		Thread.sleep(50)
-
-		test.onComplete()
-		test.assertResult(
+		cache.assertContent(
 				Empty,
 				Loading(Empty, loader),
 				Loaded("Hello"),
@@ -39,31 +24,25 @@ class SimpleCacheTest {
 				Loading(Empty, loader),
 				Loaded("Hello"),
 				Loading(Loaded("Hello"), loader),
-				Loaded("Hello"))
+				Loaded("Hello")) {
+
+			update(Updaters.auto())
+			update(Updaters.set("Hi"))
+			update(Updaters.reload())
+			update(Updaters.set(null))
+			update(Updaters.auto())
+			update(Updaters.auto())
+			update(Updaters.reload())
+			update(Updaters.cancelLoading())
+		}
 	}
 
 	@Test
 	fun update_withExtensions() {
-		val loader = Single.just("Hello")
-		val cache = SimpleCache(loader)
-		val test = cache.observe().test()
+		val loader = Single.just("Hello").withPrettyToString()
+		val cache = SimpleCache(loader, Schedulers.trampoline())
 
-		cache.update(Updaters.auto())
-		Thread.sleep(50)
-		cache.set("Hi")
-		cache.reload()
-		Thread.sleep(50)
-		cache.set(null)
-		cache.load()
-		Thread.sleep(50)
-		cache.load()
-		Thread.sleep(50)
-		cache.reload()
-		cache.cancelLoading()
-		Thread.sleep(50)
-
-		test.onComplete()
-		test.assertResult(
+		cache.assertContent(
 				Empty,
 				Loading(Empty, loader),
 				Loaded("Hello"),
@@ -74,32 +53,26 @@ class SimpleCacheTest {
 				Loading(Empty, loader),
 				Loaded("Hello"),
 				Loading(Loaded("Hello"), loader),
-				Loaded("Hello"))
+				Loaded("Hello")) {
+
+			load()
+			set("Hi")
+			reload()
+			set(null)
+			load()
+			load()
+			reload()
+			cancelLoading()
+		}
 	}
 
 	@Test
 	fun update_withErrors() {
-		val exception = Exception()
-		val loader = Single.error<String>(exception)
-		val cache = SimpleCache<String>(loader)
-		val test = cache.observe().test()
+		val exception = DebugException("load failed!")
+		val loader = Single.error<String>(exception).withPrettyToString()
+		val cache = SimpleCache<String>(loader, Schedulers.trampoline())
 
-		cache.update(Updaters.auto())
-		Thread.sleep(50)
-		cache.set("Hi")
-		cache.reload()
-		Thread.sleep(50)
-		cache.set(null)
-		cache.load()
-		Thread.sleep(50)
-		cache.load()
-		Thread.sleep(50)
-		cache.reload()
-		cache.resetFailure()
-		Thread.sleep(50)
-
-		test.onComplete()
-		test.assertResult(
+		cache.assertContent(
 				Empty,
 				Loading(Empty, loader),
 				Failed(Empty, exception),
@@ -113,44 +86,41 @@ class SimpleCacheTest {
 				Failed(Empty, exception),
 				Loading(Failed(Empty, exception), loader),
 				Failed(Empty, exception),
-				Empty)
+				Empty) {
+
+			update(Updaters.auto())
+			set("Hi")
+			reload()
+			set(null)
+			load()
+			load()
+			reload()
+			resetFailure()
+		}
 	}
 
 	@Test
 	fun observe() {
-		val cache = SimpleCache(Single.just("Hello"))
+		val loader = Single.just("Hello").withPrettyToString()
+		val cache = SimpleCache(loader, Schedulers.trampoline())
 
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Empty)
+		cache.printLog()
+
+		cache.assertCurrentContent(Empty)
 
 		cache.set("Hi")
-		Thread.sleep(50)
-
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Loaded("Hi"))
+		cache.assertCurrentContent(Loaded("Hi"))
 
 		cache.set(null)
-		Thread.sleep(50)
-
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Empty)
+		cache.assertCurrentContent(Empty)
 
 		cache.load()
-		Thread.sleep(50)
-
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Loaded("Hello"))
+		cache.assertCurrentContent(Loaded("Hello"))
 
 		cache.set("World")
-		Thread.sleep(50)
-
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Loaded("World"))
+		cache.assertCurrentContent(Loaded("World"))
 
 		cache.load()
-		Thread.sleep(50)
-
-		cache.observe().test().apply { onComplete() }
-				.assertResult(Loaded("World"))
+		cache.assertCurrentContent(Loaded("World"))
 	}
 }
