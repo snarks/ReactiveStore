@@ -22,6 +22,5 @@ inline fun <T : Any> ReactiveCache<T>.assertContent(vararg expected: LoadStatus<
 	val test = observe().test()
 
 	block()
-	test.onComplete()
-	test.assertResult(*expected)
+	test.assertValuesOnly(*expected)
 }
