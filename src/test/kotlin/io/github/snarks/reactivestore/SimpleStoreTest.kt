@@ -11,13 +11,12 @@ class SimpleStoreTest {
 
 	@Test
 	fun update_withUpdaters() {
-		val loaderA = Single.just("A Loader's value").withPrettyToString()
-		val loaderSupplier = { key: String -> if (key == "A") loaderA else Single.just("Hello $key").withPrettyToString() }
+		val loaderSupplier = { key: String -> DebugLoader("Hello $key") }
 		val store = SimpleStore(loaderSupplier, Schedulers.trampoline())
 
 		val testA = store.observe("A").test()
-		val testB = store.observe("B").filter { it !is Loading }.test()
-		val testC = store.observe("C").filter { it !is Loading }.test()
+		val testB = store.observe("B").test()
+		val testC = store.observe("C").test()
 
 		store.printLog()
 
@@ -34,31 +33,36 @@ class SimpleStoreTest {
 
 		testA.assertValuesOnly(
 				Empty,
-				Loading(Empty, loaderA),
-				Loaded("A Loader's value"),
+				Loading(Empty, DebugLoader("Hello A")),
+				Loaded("Hello A"),
 				Loaded("Custom Value"),
-				Loading(Loaded("Custom Value"), loaderA),
-				Loaded("A Loader's value"),
+				Loading(Loaded("Custom Value"), DebugLoader("Hello A")),
+				Loaded("Hello A"),
 				Empty,
-				Loading(Empty, loaderA),
-				Loaded("A Loader's value"),
-				Loading(Loaded("A Loader's value"), loaderA),
-				Loaded("A Loader's value"))
+				Loading(Empty, DebugLoader("Hello A")),
+				Loaded("Hello A"),
+				Loading(Loaded("Hello A"), DebugLoader("Hello A")),
+				Loaded("Hello A"))
 
-		testB.assertValuesOnly(Empty, Loaded("Hello B"))
+		testB.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader("Hello B")),
+				Loaded("Hello B"))
 
-		testC.assertValuesOnly(Empty, Loaded("Hello C"))
+		testC.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader("Hello C")),
+				Loaded("Hello C"))
 	}
 
 	@Test
 	fun update_withExtensions() {
-		val loaderA = Single.just("A Loader's value").withPrettyToString()
-		val loaderSupplier = { key: String -> if (key == "A") loaderA else Single.just("Hello $key").withPrettyToString() }
+		val loaderSupplier = { key: String -> DebugLoader("Hello $key") }
 		val store = SimpleStore(loaderSupplier, Schedulers.trampoline())
 
 		val testA = store.observe("A").test()
-		val testB = store.observe("B").filter { it !is Loading }.test()
-		val testC = store.observe("C").filter { it !is Loading }.test()
+		val testB = store.observe("B").test()
+		val testC = store.observe("C").test()
 
 		store.printLog()
 
@@ -75,34 +79,36 @@ class SimpleStoreTest {
 
 		testA.assertValuesOnly(
 				Empty,
-				Loading(Empty, loaderA),
-				Loaded("A Loader's value"),
+				Loading(Empty, DebugLoader("Hello A")),
+				Loaded("Hello A"),
 				Loaded("Custom Value"),
-				Loading(Loaded("Custom Value"), loaderA),
-				Loaded("A Loader's value"),
+				Loading(Loaded("Custom Value"), DebugLoader("Hello A")),
+				Loaded("Hello A"),
 				Empty,
-				Loading(Empty, loaderA),
-				Loaded("A Loader's value"),
-				Loading(Loaded("A Loader's value"), loaderA),
-				Loaded("A Loader's value"))
+				Loading(Empty, DebugLoader("Hello A")),
+				Loaded("Hello A"),
+				Loading(Loaded("Hello A"), DebugLoader("Hello A")),
+				Loaded("Hello A"))
 
-		testB.assertValuesOnly(Empty, Loaded("Hello B"))
+		testB.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader("Hello B")),
+				Loaded("Hello B"))
 
-		testC.assertValuesOnly(Empty, Loaded("Hello C"))
+		testC.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader("Hello C")),
+				Loaded("Hello C"))
 	}
 
 	@Test
 	fun update_withErrors() {
-		val loaderA = Single.error<String>(DebugException("load failed for A!")).withPrettyToString()
-		val loaderSupplier = { key: String ->
-			if (key == "A") loaderA
-			else Single.error<String>(DebugException("error $key")).withPrettyToString()
-		}
+		val loaderSupplier = { key: String -> DebugLoader.error<String>(DebugException("Failed $key!")) }
 		val store = SimpleStore(loaderSupplier, Schedulers.trampoline())
 
 		val testA = store.observe("A").test()
-		val testB = store.observe("B").filter { it !is Loading }.test()
-		val testC = store.observe("C").filter { it !is Loading }.test()
+		val testB = store.observe("B").test()
+		val testC = store.observe("C").test()
 
 		store.printLog()
 
@@ -119,23 +125,29 @@ class SimpleStoreTest {
 
 		testA.assertValuesOnly(
 				Empty,
-				Loading(Empty, loaderA),
-				Failed(Empty, DebugException("load failed for A!")),
+				Loading(Empty, DebugLoader.error("Failed A!")),
+				Failed(Empty, DebugException("Failed A!")),
 				Loaded("Custom Value"),
-				Loading(Loaded("Custom Value"), loaderA),
-				Failed(Loaded("Custom Value"), DebugException("load failed for A!")),
+				Loading(Loaded("Custom Value"), DebugLoader.error("Failed A!")),
+				Failed(Loaded("Custom Value"), DebugException("Failed A!")),
 				Empty,
-				Loading(Empty, loaderA),
-				Failed(Empty, DebugException("load failed for A!")),
-				Loading(Empty, loaderA),
-				Failed(Empty, DebugException("load failed for A!")),
-				Loading(Failed(Empty, DebugException("load failed for A!")), loaderA),
-				Failed(Empty, DebugException("load failed for A!")),
+				Loading(Empty, DebugLoader.error("Failed A!")),
+				Failed(Empty, DebugException("Failed A!")),
+				Loading(Empty, DebugLoader.error("Failed A!")),
+				Failed(Empty, DebugException("Failed A!")),
+				Loading(Failed(Empty, DebugException("Failed A!")), DebugLoader.error("Failed A!")),
+				Failed(Empty, DebugException("Failed A!")),
 				Empty)
 
-		testB.assertValuesOnly(Empty, Failed(Empty, DebugException("error B")))
+		testB.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader.error("Failed B!")),
+				Failed(Empty, DebugException("Failed B!")))
 
-		testC.assertValuesOnly(Empty, Failed(Empty, DebugException("error C")))
+		testC.assertValuesOnly(
+				Empty,
+				Loading(Empty, DebugLoader.error("Failed C!")),
+				Failed(Empty, DebugException("Failed C!")))
 	}
 
 	@Test
