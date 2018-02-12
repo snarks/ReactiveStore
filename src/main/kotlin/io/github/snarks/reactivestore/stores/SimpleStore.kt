@@ -17,7 +17,6 @@ package io.github.snarks.reactivestore.stores
 
 import io.github.snarks.reactivestore.utils.Empty
 import io.github.snarks.reactivestore.utils.LoadStatus
-import io.github.snarks.reactivestore.utils.Loaded
 import io.github.snarks.reactivestore.utils.Updater
 import io.github.snarks.reactivestore.utils.internal.Content
 import io.github.snarks.reactivestore.utils.internal.applyUpdate
@@ -26,7 +25,6 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.SingleSource
-import io.reactivex.rxkotlin.ofType
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -64,13 +62,16 @@ class SimpleStore<K : Any, V : Any>(
 				.optObserveOn(publishScheduler)
 	}
 
-	override fun contents(): Observable<V> {
-		val contents = Observable.defer { map.values.toObservable() }.subscribeOn(updateScheduler)
+	override fun observeUpdates(): Observable<Pair<K, LoadStatus<V>>> {
+		return relay.map { (k, v) -> k to v.status }
+				.optObserveOn(publishScheduler)
+	}
 
-		return contents
-				.map { it.status.lastStableStatus }
-				.ofType<Loaded<V>>()
-				.map { it.value }
+	override fun currentStatus(): Observable<Pair<K, LoadStatus<V>>> {
+		val entries = Observable.defer { map.entries.toObservable() }.subscribeOn(updateScheduler)
+
+		return entries
+				.map { (k, v) -> k to v.status }
 				.optObserveOn(publishScheduler)
 	}
 

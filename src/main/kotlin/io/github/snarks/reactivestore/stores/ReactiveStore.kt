@@ -15,9 +15,7 @@
  */
 package io.github.snarks.reactivestore.stores
 
-import io.github.snarks.reactivestore.utils.LoadStatus
-import io.github.snarks.reactivestore.utils.Updater
-import io.github.snarks.reactivestore.utils.Updaters
+import io.github.snarks.reactivestore.utils.*
 import io.reactivex.Observable
 
 
@@ -46,11 +44,21 @@ interface ReactiveStore<K : Any, V : Any> {
 	fun observe(key: K): Observable<LoadStatus<V>>
 
 	/**
-	 * Emits all the currently loaded values of this store
+	 * Emits all content updates on this store
+	 *
+	 * Unlike [observe], this will only emit content updates that happen after subscription.
+	 */
+	fun observeUpdates(): Observable<Pair<K, LoadStatus<V>>>
+
+	/**
+	 * Emits the current status of all present content
+	 *
+	 * This method will only emit [Loaded], [Loading] & [Failed] status. The [Empty] status will not be emitted. If this
+	 * store is empty, it will return an empty observable.
 	 *
 	 * The emitted values will be the ones that exist as of the time of subscription.
 	 */
-	fun contents(): Observable<V>
+	fun currentStatus(): Observable<Pair<K, LoadStatus<V>>>
 
 	/**
 	 * Emits all the keys with associated content on this store

@@ -16,10 +16,13 @@
 package io.github.snarks.reactivestore.stores
 
 import io.github.snarks.reactivestore.utils.LoadStatus
+import io.github.snarks.reactivestore.utils.Loaded
 import io.github.snarks.reactivestore.utils.Updater
 import io.github.snarks.reactivestore.utils.Updaters
 import io.reactivex.Observable
 import io.reactivex.SingleSource
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.ofType
 
 
 /**
@@ -30,6 +33,26 @@ import io.reactivex.SingleSource
 fun <K : Any, V : Any> ReactiveStore<K, V>.load(key: K, updater: Updater<V> = Updaters.auto()): Observable<LoadStatus<V>> {
 	update(key, updater)
 	return observe(key)
+}
+
+/**
+ * Convenience method to call [ReactiveStore.load] and then [Observable.subscribe]
+ *
+ * The default [updater] is [Updaters.auto].
+ */
+inline fun <K : Any, V : Any> ReactiveStore<K, V>.loadThen(
+		key: K,
+		noinline updater: Updater<V> = Updaters.auto(),
+		crossinline callback: (LoadStatus<V>) -> Unit): Disposable = load(key, updater).subscribe { callback(it) }
+
+/**
+ * Emits all the currently loaded values of this store
+ */
+fun <K : Any, V : Any> ReactiveStore<K, V>.contents(): Observable<V> {
+	return currentStatus()
+			.map { (_, v) -> v.lastStableStatus }
+			.ofType<Loaded<V>>()
+			.map { it.value }
 }
 
 /** Alias of `update(Updaters.cancelLoading())` */
