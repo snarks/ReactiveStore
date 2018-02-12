@@ -62,7 +62,7 @@ interface ReactiveStore<K : Any, V : Any> {
 	 *
 	 * The [Empty] status will be skipped altogether. If this store has nothing, it will return an empty observable.
 	 *
-	 * The emitted values will be the ones that exist as of the time of subscription.
+	 * The emitted values will be the ones that exist as of the time of subscription in no particular order.
 	 *
 	 * This observable is bounded and will not _normally_ emit an `onError` signal.
 	 */
@@ -71,7 +71,7 @@ interface ReactiveStore<K : Any, V : Any> {
 	/**
 	 * Emits all the keys with associated content on this store
 	 *
-	 * The emitted values will be the ones that exist as of the time of subscription.
+	 * The emitted values will be the ones that exist as of the time of subscription in no particular order.
 	 *
 	 * This observable is bounded and will not _normally_ emit an `onError` signal.
 	 */

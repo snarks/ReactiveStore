@@ -47,6 +47,10 @@ inline fun <K : Any, V : Any> ReactiveStore<K, V>.loadThen(
 
 /**
  * Emits all the currently loaded values of this store
+ *
+ * The emitted values will be the ones that exist as of the time of subscription in no particular order.
+ *
+ * This observable is bounded and will not _normally_ emit an `onError` signal.
  */
 fun <K : Any, V : Any> ReactiveStore<K, V>.contents(): Observable<V> {
 	return currentStatus()
