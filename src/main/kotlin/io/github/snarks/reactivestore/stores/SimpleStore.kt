@@ -37,8 +37,9 @@ import io.reactivex.subjects.PublishSubject
  * this store will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
  * altogether. _(The default value,_ `Schedulers.single()`, _should be adequate in most cases.)_
  *
- * The [publishScheduler] is an optional scheduler which will be used to emit items from the [observe], [contents] and
- * [keys] methods.
+ * The [publishScheduler] is an optional scheduler which will be used to emit items from its observable methods
+ *
+ * @constructor Instantiates a new [SimpleStore]
  */
 class SimpleStore<K : Any, V : Any>(
 		private val loaderSupplier: (key: K) -> SingleSource<V>,

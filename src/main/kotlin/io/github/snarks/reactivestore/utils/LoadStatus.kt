@@ -49,15 +49,37 @@ object Empty : StableStatus<Nothing>() {
 	override fun toString(): String = "Empty"
 }
 
-/** The status when the cache or store has something in it */
+/**
+ * The status when the cache or store has something in it
+ *
+ * @constructor Instantiates a new [Loaded] status with the given [value]
+ */
 data class Loaded<out T : Any>(val value: T) : StableStatus<T>()
 
-/** The status when a cache or store is currently loading something */
+/**
+ * The status when a cache or store is currently loading something
+ *
+ * @constructor Instantiates a new [Loading] status with the given [lastStableStatus] and [loader]
+ */
 data class Loading<out T : Any>(override val lastStableStatus: StableStatus<T>, val loader: Single<out T>) : PendingStatus<T>() {
+	/**
+	 * Instantiates a new [Loading] status
+	 *
+	 * This version automatically retrieves the `lastStableStatus` from [prev].
+	 */
 	constructor(prev: LoadStatus<T>, loader: Single<out T>) : this(prev.lastStableStatus, loader)
 }
 
-/** The status when the loading had failed */
+/**
+ * The status when the loading had failed
+ *
+ * @constructor Instantiates a new [Failed] status with the given [lastStableStatus] and [error]
+ */
 data class Failed<out T : Any>(override val lastStableStatus: StableStatus<T>, val error: Throwable) : PendingStatus<T>() {
+	/**
+	 * Instantiates a new [Failed] status
+	 *
+	 * This version automatically retrieves the `lastStableStatus` from [prev].
+	 */
 	constructor(prev: LoadStatus<T>, error: Throwable) : this(prev.lastStableStatus, error)
 }

@@ -36,7 +36,9 @@ import io.reactivex.subjects.BehaviorSubject
  * this cache will be used in a multithreaded / concurrent environment. Parallel schedulers should be avoided
  * altogether. _(The default value,_ `Schedulers.single()`, _should be adequate in most cases.)_
  *
- * The [publishScheduler] is an optional scheduler which will be used to emit items from the [observe] method.
+ * The [publishScheduler] is an optional scheduler which will be used to emit items from its observable methods.
+ *
+ * @constructor Instantiates a new [SimpleCache]
  */
 class SimpleCache<T : Any>(
 		loader: SingleSource<out T>,

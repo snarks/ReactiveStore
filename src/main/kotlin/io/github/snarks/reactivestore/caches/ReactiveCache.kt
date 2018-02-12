@@ -40,13 +40,15 @@ interface ReactiveCache<T : Any> {
 	 * Emits the current status and subsequent updates of this cache
 	 *
 	 * The first item emitted by the observable is the current status as of the time of its subscription.
+	 *
+	 * This observable is **unbounded**, and will not _normally_ emit a terminal signal.
 	 */
 	fun observe(): Observable<LoadStatus<T>>
 
 	/**
 	 * Emits the current status of this cache
 	 *
-	 * The item to be emitted will be the current status as of the time of its subscription
+	 * The item to be emitted will be the current status as of the time of its subscription.
 	 */
 	fun currentStatus(): Single<LoadStatus<T>>
 }
