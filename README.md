@@ -2,9 +2,9 @@
 Containers with Observable callbacks.
 
 This library provides 2 main types:
-- [ReactiveCache](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.caches/-reactive-cache/index.html)
+- [ReactiveCache](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.1/io.github.snarks.reactivestore.caches/-reactive-cache/index.html)
   for loading & storing a single value
-- [ReactiveStore](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/io.github.snarks.reactivestore.stores/-reactive-store/index.html)
+- [ReactiveStore](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.1/io.github.snarks.reactivestore.stores/-reactive-store/index.html)
   for loading & storing multiple values
 
 ## Example
@@ -45,7 +45,7 @@ posts.contents().toList().subscribe { loadedPosts ->
 ```
 
 ## Documentation
-The Kotlin docs can be found [here](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.0/).
+The Kotlin docs can be found [here](https://snarks.github.io/ReactiveStore/kotlin-docs/1.0.1/).
 
 ## Adding ReactiveStore to your Project
 You can add this project as a dependency via [JitPack](https://jitpack.io/).
@@ -56,7 +56,7 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-     compile 'io.github.snarks:ReactiveStore:1.0.0'
+     compile 'io.github.snarks:ReactiveStore:1.0.1'
 }
 ```
 (_`com.github.snarks` will also work_)
