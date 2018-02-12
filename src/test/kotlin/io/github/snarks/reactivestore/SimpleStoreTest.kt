@@ -19,9 +19,7 @@ class SimpleStoreTest {
 		val testB = store.observe("B").filter { it !is Loading }.test()
 		val testC = store.observe("C").filter { it !is Loading }.test()
 
-		store.observe("A").subscribe { println("A >> $it") }
-		store.observe("B").subscribe { println("B >> $it") }
-		store.observe("C").subscribe { println("C >> $it") }
+		store.printLog()
 
 		store.update("B", Updaters.auto())
 		store.update("A", Updaters.auto())
@@ -34,8 +32,7 @@ class SimpleStoreTest {
 		store.update("A", Updaters.cancelLoading())
 		store.update("C", Updaters.auto())
 
-		testA.onComplete()
-		testA.assertResult(
+		testA.assertValuesOnly(
 				Empty,
 				Loading(Empty, loaderA),
 				Loaded("A Loader's value"),
@@ -48,11 +45,9 @@ class SimpleStoreTest {
 				Loading(Loaded("A Loader's value"), loaderA),
 				Loaded("A Loader's value"))
 
-		testB.onComplete()
-		testB.assertResult(Empty, Loaded("Hello B"))
+		testB.assertValuesOnly(Empty, Loaded("Hello B"))
 
-		testC.onComplete()
-		testC.assertResult(Empty, Loaded("Hello C"))
+		testC.assertValuesOnly(Empty, Loaded("Hello C"))
 	}
 
 	@Test
@@ -65,9 +60,7 @@ class SimpleStoreTest {
 		val testB = store.observe("B").filter { it !is Loading }.test()
 		val testC = store.observe("C").filter { it !is Loading }.test()
 
-		store.observe("A").subscribe { println("A >> $it") }
-		store.observe("B").subscribe { println("B >> $it") }
-		store.observe("C").subscribe { println("C >> $it") }
+		store.printLog()
 
 		store.load("B")
 		store.load("A")
@@ -80,8 +73,7 @@ class SimpleStoreTest {
 		store.cancelLoading("A")
 		store.load("C")
 
-		testA.onComplete()
-		testA.assertResult(
+		testA.assertValuesOnly(
 				Empty,
 				Loading(Empty, loaderA),
 				Loaded("A Loader's value"),
@@ -94,11 +86,9 @@ class SimpleStoreTest {
 				Loading(Loaded("A Loader's value"), loaderA),
 				Loaded("A Loader's value"))
 
-		testB.onComplete()
-		testB.assertResult(Empty, Loaded("Hello B"))
+		testB.assertValuesOnly(Empty, Loaded("Hello B"))
 
-		testC.onComplete()
-		testC.assertResult(Empty, Loaded("Hello C"))
+		testC.assertValuesOnly(Empty, Loaded("Hello C"))
 	}
 
 	@Test
@@ -114,9 +104,7 @@ class SimpleStoreTest {
 		val testB = store.observe("B").filter { it !is Loading }.test()
 		val testC = store.observe("C").filter { it !is Loading }.test()
 
-		store.observe("A").subscribe { println("A >> $it") }
-		store.observe("B").subscribe { println("B >> $it") }
-		store.observe("C").subscribe { println("C >> $it") }
+		store.printLog()
 
 		store.load("B")
 		store.load("A")
@@ -129,8 +117,7 @@ class SimpleStoreTest {
 		store.resetFailure("A")
 		store.load("C")
 
-		testA.onComplete()
-		testA.assertResult(
+		testA.assertValuesOnly(
 				Empty,
 				Loading(Empty, loaderA),
 				Failed(Empty, DebugException("load failed for A!")),
@@ -146,11 +133,9 @@ class SimpleStoreTest {
 				Failed(Empty, DebugException("load failed for A!")),
 				Empty)
 
-		testB.onComplete()
-		testB.assertResult(Empty, Failed(Empty, DebugException("error B")))
+		testB.assertValuesOnly(Empty, Failed(Empty, DebugException("error B")))
 
-		testC.onComplete()
-		testC.assertResult(Empty, Failed(Empty, DebugException("error C")))
+		testC.assertValuesOnly(Empty, Failed(Empty, DebugException("error C")))
 	}
 
 	@Test
@@ -162,9 +147,7 @@ class SimpleStoreTest {
 
 		val store = SimpleStore<String, String>({ Single.just("Hello $it") }, Schedulers.trampoline())
 
-		store.observe("A").subscribe { println("A >> $it") }
-		store.observe("B").subscribe { println("B >> $it") }
-		store.observe("C").subscribe { println("C >> $it") }
+		store.printLog()
 
 		store.load("A")
 		store.load("B")
@@ -197,9 +180,7 @@ class SimpleStoreTest {
 
 		val store = SimpleStore<String, String>({ Single.just("Hello $it") }, Schedulers.trampoline())
 
-		store.observe("A").subscribe { println("A >> $it") }
-		store.observe("B").subscribe { println("B >> $it") }
-		store.observe("C").subscribe { println("C >> $it") }
+		store.printLog()
 
 		store.load("A")
 		store.load("B")
