@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>io.github.snarks.reactivestore.utils - ReactiveStore</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href=".">io.github.snarks.reactivestore.utils</a><br/>
+<br/>
+<h2>Package io.github.snarks.reactivestore.utils</h2>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-empty/index.html">Empty</a></td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Empty</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-stable-status/index.html"><span class="identifier">StableStatus</span></a><span class="symbol">&lt;</span><span class="identifier">Nothing</span><span class="symbol">&gt;</span></code>
+<p>The status when a cache or store has nothing in it</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-failed/index.html">Failed</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Failed</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pending-status.html"><span class="identifier">PendingStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>The status when the loading had failed</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-load-status/index.html">LoadStatus</a></td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">LoadStatus</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span></code>
+<p>Represents the status of a cache or store</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-loaded/index.html">Loaded</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Loaded</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-stable-status/index.html"><span class="identifier">StableStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>The status when the cache or store has something in it</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-loading/index.html">Loading</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Loading</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pending-status.html"><span class="identifier">PendingStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>The status when a cache or store is currently loading something</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-pending-status.html">PendingStatus</a></td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">PendingStatus</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Statuses that are meant to be just temporary</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-stable-status/index.html">StableStatus</a></td>
+<td>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">StableStatus</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>Statuses where there's no pending action in the store or cache</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-updaters/index.html">Updaters</a></td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Updaters</span></code>
+<p>Provides commonly used <a href="-updater.html">Updater</a> implementations</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Type Aliases</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-updater.html">Updater</a></td>
+<td>
+<code><span class="keyword">typealias </span><span class="identifier">Updater</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;<span class="symbol">(</span><span class="identifier">currentStatus</span><span class="symbol">:</span>&nbsp;<a href="-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<span class="identifier">defaultLoader</span><span class="symbol">:</span>&nbsp;<span class="identifier">Single</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>A function that transitions one <a href="-load-status/index.html">LoadStatus</a> to the next</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ReactiveCache - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.caches</a>&nbsp;/&nbsp;<a href=".">ReactiveCache</a><br/>
+<br/>
+<h1>ReactiveCache</h1>
+<code><span class="keyword">interface </span><span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span></code>
+<p>An observable container that loads and stores a single value</p>
+<h3>Parameters</h3>
+
+<p><a name="T"></a>
+<code>T</code> - The type of the content to be stored in this cache.
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="current-status.html">currentStatus</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">currentStatus</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Single</span><span class="symbol">&lt;</span><a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Emits the current status of this cache</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="observe.html">observe</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">observe</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Observable</span><span class="symbol">&lt;</span><a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Emits the current status and subsequent updates of this cache</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="update.html">update</a></td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">update</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches.ReactiveCache$update(kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.ReactiveCache.T)), io.reactivex.Single(()), )))/updater">updater</span><span class="symbol">:</span>&nbsp;<a href="../../io.github.snarks.reactivestore.utils/-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Updates the contents of this cache with the given <a href="update.html#io.github.snarks.reactivestore.caches.ReactiveCache$update(kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.ReactiveCache.T)), io.reactivex.Single(()), )))/updater">updater</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../cancel-loading.html">cancelLoading</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">cancelLoading</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Alias of <code>update(Updaters.cancelLoading())</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../load.html">load</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">load</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches$load(io.github.snarks.reactivestore.caches.ReactiveCache((io.github.snarks.reactivestore.caches.load.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.load.T)), io.reactivex.Single(()), )))/updater">updater</span><span class="symbol">:</span>&nbsp;<a href="../../io.github.snarks.reactivestore.utils/-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;Updaters.auto()<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Observable</span><span class="symbol">&lt;</span><a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Convenience method to call <a href="update.html">ReactiveCache.update</a> and then <a href="observe.html">ReactiveCache.observe</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../load-then.html">loadThen</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">loadThen</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches$loadThen(io.github.snarks.reactivestore.caches.ReactiveCache((io.github.snarks.reactivestore.caches.loadThen.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.loadThen.T)), io.reactivex.Single(()), )), kotlin.Function1((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.loadThen.T)), kotlin.Unit)))/updater">updater</span><span class="symbol">:</span>&nbsp;<a href="../../io.github.snarks.reactivestore.utils/-updater.html"><span class="identifier">Updater</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;Updaters.auto()<span class="symbol">, </span><span class="identifier" id="io.github.snarks.reactivestore.caches$loadThen(io.github.snarks.reactivestore.caches.ReactiveCache((io.github.snarks.reactivestore.caches.loadThen.T)), kotlin.Function2((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.loadThen.T)), io.reactivex.Single(()), )), kotlin.Function1((io.github.snarks.reactivestore.utils.LoadStatus((io.github.snarks.reactivestore.caches.loadThen.T)), kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">Unit</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Disposable</span></code>
+<p>Convenience method to call <a href="../load.html">ReactiveCache.load</a> and then <a href="#">Observable.subscribe</a></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../reload.html">reload</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">reload</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches$reload(io.github.snarks.reactivestore.caches.ReactiveCache((io.github.snarks.reactivestore.caches.reload.T)), io.reactivex.SingleSource((io.github.snarks.reactivestore.caches.reload.T)))/customLoader">customLoader</span><span class="symbol">:</span>&nbsp;<span class="identifier">SingleSource</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Alias of <code>update(Updaters.reload())</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../reset-failure.html">resetFailure</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">resetFailure</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Alias of <code>update(Updaters.resetFailure())</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../set.html">set</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="io.github.snarks.reactivestore.caches$set(io.github.snarks.reactivestore.caches.ReactiveCache((io.github.snarks.reactivestore.caches.set.T)), io.github.snarks.reactivestore.caches.set.T)/value">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Alias of <code>update(Updaters.set())</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../-simple-cache/index.html">SimpleCache</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SimpleCache</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">ReactiveCache</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<p>A basic implementation of ReactiveCache</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,17 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ReactiveStore.observeUpdates - ReactiveStore</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href="../index.html">io.github.snarks.reactivestore.stores</a>&nbsp;/&nbsp;<a href="index.html">ReactiveStore</a>&nbsp;/&nbsp;<a href=".">observeUpdates</a><br/>
+<br/>
+<h1>observeUpdates</h1>
+<a name="io.github.snarks.reactivestore.stores.ReactiveStore$observeUpdates()"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">observeUpdates</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Observable</span><span class="symbol">&lt;</span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">K</span><span class="symbol">,</span>&nbsp;<a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">V</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Emits all content updates on this store</p>
+<p>Unlike <a href="observe.html">observe</a>, this will only emit content updates that happen after subscription.</p>
+<p>This observable is <strong>unbounded</strong>, and will not <emph>normally</emph> emit a terminal signal.</p>
+</BODY>
+</HTML>
