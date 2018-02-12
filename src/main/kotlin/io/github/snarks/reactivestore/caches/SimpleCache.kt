@@ -52,4 +52,6 @@ class SimpleCache<T : Any>(
 	}
 
 	override fun observe(): Observable<LoadStatus<T>> = relay.map { it.status }.optObserveOn(publishScheduler)
+
+	override fun currentStatus(): Single<LoadStatus<T>> = observe().first(Empty)
 }

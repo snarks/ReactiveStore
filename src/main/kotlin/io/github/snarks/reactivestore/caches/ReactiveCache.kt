@@ -19,6 +19,7 @@ import io.github.snarks.reactivestore.utils.LoadStatus
 import io.github.snarks.reactivestore.utils.Updater
 import io.github.snarks.reactivestore.utils.Updaters
 import io.reactivex.Observable
+import io.reactivex.Single
 
 
 /**
@@ -41,4 +42,11 @@ interface ReactiveCache<T : Any> {
 	 * The first item emitted by the observable is the current status as of the time of its subscription.
 	 */
 	fun observe(): Observable<LoadStatus<T>>
+
+	/**
+	 * Emits the current status of this cache
+	 *
+	 * The item to be emitted will be the current status as of the time of its subscription
+	 */
+	fun currentStatus(): Single<LoadStatus<T>>
 }

@@ -242,4 +242,35 @@ class SimpleCacheTest {
 				Loading(Empty, customLoader),
 				Loaded("Hi"))
 	}
+
+	@Test
+	fun currentStatus() {
+		val loader = DebugLoader.delayed("Hello", 10)
+		val cache = SimpleCache(loader, Schedulers.trampoline())
+
+		cache.printLog()
+
+		cache.currentStatus().test().assertResult(Empty)
+
+		cache.set("Hi")
+		cache.currentStatus().test().assertResult(Loaded("Hi"))
+
+		cache.set(null)
+		cache.currentStatus().test().assertResult(Empty)
+
+		cache.load()
+		cache.currentStatus().test().assertResult(Loading(Empty, DebugLoader("Hello")))
+
+		loader.advanceTime(11)
+		cache.currentStatus().test().assertResult(Loaded("Hello"))
+
+		cache.set("World")
+		cache.currentStatus().test().assertResult(Loaded("World"))
+
+		cache.load()
+		cache.currentStatus().test().assertResult(Loaded("World"))
+
+		loader.advanceTime(11)
+		cache.currentStatus().test().assertResult(Loaded("World"))
+	}
 }
