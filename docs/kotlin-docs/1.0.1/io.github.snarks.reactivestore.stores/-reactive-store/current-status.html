@@ -12,7 +12,7 @@
 <code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">currentStatus</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Observable</span><span class="symbol">&lt;</span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">K</span><span class="symbol">,</span>&nbsp;<a href="../../io.github.snarks.reactivestore.utils/-load-status/index.html"><span class="identifier">LoadStatus</span></a><span class="symbol">&lt;</span><span class="identifier">V</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
 <p>Emits the current status of all present content</p>
 <p>The <a href="../../io.github.snarks.reactivestore.utils/-empty/index.html">Empty</a> status will be skipped altogether. If this store has nothing, it will return an empty observable.</p>
-<p>The emitted values will be the ones that exist as of the time of subscription.</p>
+<p>The emitted values will be the ones that exist as of the time of subscription in no particular order.</p>
 <p>This observable is bounded and will not <emph>normally</emph> emit an <code>onError</code> signal.</p>
 </BODY>
 </HTML>

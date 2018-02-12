@@ -11,5 +11,7 @@
 <a name="io.github.snarks.reactivestore.stores$contents(io.github.snarks.reactivestore.stores.ReactiveStore((io.github.snarks.reactivestore.stores.contents.K, io.github.snarks.reactivestore.stores.contents.V)))"></a>
 <code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">K</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">, </span><span class="identifier">V</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Any</span><span class="symbol">&gt;</span> <a href="-reactive-store/index.html"><span class="identifier">ReactiveStore</span></a><span class="symbol">&lt;</span><span class="identifier">K</span><span class="symbol">,</span>&nbsp;<span class="identifier">V</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">contents</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Observable</span><span class="symbol">&lt;</span><span class="identifier">V</span><span class="symbol">&gt;</span></code>
 <p>Emits all the currently loaded values of this store</p>
+<p>The emitted values will be the ones that exist as of the time of subscription in no particular order.</p>
+<p>This observable is bounded and will not <emph>normally</emph> emit an <code>onError</code> signal.</p>
 </BODY>
 </HTML>
