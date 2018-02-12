@@ -3,8 +3,11 @@ package io.github.snarks.reactivestore
 import io.github.snarks.reactivestore.caches.*
 import io.github.snarks.reactivestore.utils.*
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
+import java.util.concurrent.TimeUnit.SECONDS
 
 class SimpleCacheTest {
 
@@ -122,5 +125,58 @@ class SimpleCacheTest {
 
 		cache.load()
 		cache.assertCurrentContent(Loaded("World"))
+	}
+
+	@Test
+	fun load() {
+		val timer = TestScheduler()
+		val loader = Single.just("Hello").delay(10, SECONDS, timer).withPrettyToString()
+		val cache = SimpleCache(loader, Schedulers.trampoline())
+
+		cache.printLog()
+
+		val observeTest = cache.observe().test()
+
+		val observable = cache.load()
+		val loadTest = observable.test()
+
+		timer.advanceTimeBy(20, SECONDS)
+
+		observeTest.assertValuesOnly(
+				Empty,
+				Loading(Empty, loader),
+				Loaded("Hello"))
+
+		loadTest.assertValuesOnly(
+				Loading(Empty, loader),
+				Loaded("Hello"))
+	}
+
+	@Test
+	fun loadThen() {
+		val timer = TestScheduler()
+		val loader = Single.just("Hello").delay(10, SECONDS, timer).withPrettyToString()
+		val cache = SimpleCache(loader, Schedulers.trampoline())
+
+		cache.printLog()
+
+		val observeTest = cache.observe().test()
+
+		// This is done in a controlled test environment
+		// DON'T mix mutation and concurrency like this in production code!
+		val sink = mutableListOf<LoadStatus<String>>()
+		cache.loadThen { sink.add(it) }
+
+		timer.advanceTimeBy(20, SECONDS)
+
+		observeTest.assertValuesOnly(
+				Empty,
+				Loading(Empty, loader),
+				Loaded("Hello"))
+
+		val loadTest = sink.toObservable().test()
+		loadTest.assertResult(
+				Loading(Empty, loader),
+				Loaded("Hello"))
 	}
 }

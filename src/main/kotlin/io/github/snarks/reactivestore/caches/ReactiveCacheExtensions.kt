@@ -20,6 +20,7 @@ import io.github.snarks.reactivestore.utils.Updater
 import io.github.snarks.reactivestore.utils.Updaters
 import io.reactivex.Observable
 import io.reactivex.SingleSource
+import io.reactivex.disposables.Disposable
 
 
 /**
@@ -31,6 +32,15 @@ fun <T : Any> ReactiveCache<T>.load(updater: Updater<T> = Updaters.auto()): Obse
 	update(updater)
 	return observe()
 }
+
+/**
+ * Convenience method to call [ReactiveCache.load] and then [Observable.subscribe]
+ *
+ * The default [updater] is [Updaters.auto].
+ */
+inline fun <T : Any> ReactiveCache<T>.loadThen(
+		noinline updater: Updater<T> = Updaters.auto(),
+		crossinline callback: (LoadStatus<T>) -> Unit): Disposable = load(updater).subscribe { callback(it) }
 
 /** Alias of `update(Updaters.cancelLoading())` */
 fun <T : Any> ReactiveCache<T>.cancelLoading() {
