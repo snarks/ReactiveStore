@@ -1,3 +1,5 @@
+[![Release](https://jitpack.io/v/snarks/ReactiveStore.svg)](https://jitpack.io/#snarks/RxProperty)
+
 # ReactiveStore
 Containers with Observable callbacks.
 
