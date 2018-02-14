@@ -58,7 +58,7 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-     compile 'io.github.snarks:ReactiveStore:1.0.1'
+     compile 'io.github.snarks:ReactiveStore:1.0.1-2'
 }
 ```
 (_`com.github.snarks` will also work_)
