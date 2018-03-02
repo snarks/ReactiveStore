@@ -16,6 +16,7 @@
 package io.github.snarks.reactivestore.overhaul.store
 
 import io.github.snarks.reactivestore.overhaul.cache.CacheSink
+import io.github.snarks.reactivestore.overhaul.utils.Keyed
 import io.github.snarks.reactivestore.overhaul.utils.Loader
 import io.github.snarks.reactivestore.overhaul.utils.Updater
 
@@ -45,8 +46,12 @@ fun <K, V> StoreSink<K, V>.clear(key: K) {
 	update(key, Updater.clear())
 }
 
-fun <K, V> StoreSink<K, V>.set(key: K, newValue: V) {
+fun <K, V> StoreSink<K, V>.put(key: K, newValue: V) {
 	update(key, Updater.set(newValue))
+}
+
+fun <K, V : Keyed<K>> StoreSink<K, V>.put(newValue: V) {
+	put(newValue.key, newValue)
 }
 
 fun <K, V> StoreSink<K, V>.fail(key: K, error: Throwable) {
