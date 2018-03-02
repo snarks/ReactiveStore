@@ -17,13 +17,88 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
+typealias UpdateCondition<T> = (current: Status<T>, default: Loader<T>) -> Boolean
 
-/**
- * A function that transitions one [LoadStatus] to the next
- *
- * If the return value of this function is the same as `currentStatus`, it means no change should happen in the store.
- *
- * Updaters can be invoked multiple times and may be called on different threads with no particular order.
- * So preferably, updaters should be **stateless or immutable**.
- */
-typealias Updater<T> = (currentStatus: LoadStatus<T>, defaultLoader: Single<out T>) -> LoadStatus<T>
+interface Updater<T> {
+
+	fun applyUpdate(current: Status<T>, default: Loader<T>): Change<T>
+
+	companion object {
+		// ---------------------------------------------------------------------------------------------------------- //
+		// Lambda Constructor
+
+		inline operator fun <T> invoke(crossinline applyUpdate: (Status<T>, Loader<T>) -> Change<T>): Updater<T> {
+			return object : Updater<T> {
+				override fun applyUpdate(current: Status<T>, default: Loader<T>) = applyUpdate(current, default)
+			}
+		}
+
+		// ---------------------------------------------------------------------------------------------------------- //
+		// Direct Change
+
+		fun <T> change(change: Change<T>): Updater<T> = Updater { _, _ -> change }
+
+		fun <T> clear(): Updater<T> = change(ClearValue())
+
+		fun <T> set(newValue: T): Updater<T> = change(SetValue(newValue))
+
+		fun <T> fail(error: Throwable): Updater<T> = change(Fail(error))
+
+		inline fun <T> changeIf(change: Change<T>, crossinline condition: UpdateCondition<T>): Updater<T> {
+			return Updater { current, default -> if (condition(current, default)) change else NoChange() }
+		}
+
+		// ---------------------------------------------------------------------------------------------------------- //
+		// Deferred Updates
+
+		fun <T> defer(futureUpdater: Single<Updater<T>>, ignoreIfUpdated: Boolean = true): Updater<T> {
+			return change(Defer(futureUpdater, ignoreIfUpdated))
+		}
+
+		inline fun <T> fromLoader(
+				loader: Loader<T>,
+				ignoreIfUpdated: Boolean = true,
+				crossinline condition: UpdateCondition<T> = { _, _ -> true }): Updater<T> {
+
+			return defer(loader.asFutureUpdater(condition), ignoreIfUpdated)
+		}
+
+		inline fun <T> loadIf(
+				customLoader: Loader<T>? = null,
+				ignoreIfUpdated: Boolean = true,
+				crossinline condition: UpdateCondition<T>): Updater<T> {
+
+			return Updater { _, default ->
+				val future = (customLoader ?: default).asFutureUpdater(condition)
+				Defer(future, ignoreIfUpdated)
+			}
+		}
+
+		fun <T> autoLoad(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
+			return loadIf(customLoader, ignoreIfUpdated) { c, _ -> c == Empty || c is Failed }
+		}
+
+		fun <T> reload(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
+			return loadIf(customLoader, ignoreIfUpdated) { current, _ -> current !is Loading }
+		}
+
+		// ---------------------------------------------------------------------------------------------------------- //
+		// Status Reversion
+
+		inline fun <T> revertIf(crossinline condition: UpdateCondition<T>): Updater<T> {
+			return Updater { current, default ->
+				if (condition(current, default)) {
+					val lastContent = current.lastContent
+					when (lastContent) {
+						Empty -> ClearValue()
+						is Loaded -> SetValue(lastContent.value)
+					}
+				} else NoChange()
+			}
+		}
+
+		fun <T> cancelLoad(): Updater<T> = revertIf { current, _ -> current is Loading }
+
+		fun <T> resetError(): Updater<T> = revertIf { current, _ -> current is Failed }
+	}
+}
