@@ -25,9 +25,7 @@ fun <T> CacheSource<T>.observeOn(scheduler: Scheduler): CacheSource<T> {
 }
 
 fun <T> Cache<T>.observeOn(scheduler: Scheduler): Cache<T> {
-	val scheduled: CacheSource<T> = (this as CacheSource<T>).observeOn(scheduler)
-
 	return object : Cache<T>,
-			CacheSource<T> by scheduled,
+			CacheSource<T> by ScheduledCacheSource(this, scheduler),
 			CacheSink<T> by this {}
 }

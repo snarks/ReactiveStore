@@ -34,9 +34,7 @@ fun <K, V> StoreSource<K, V>.observeOn(scheduler: Scheduler): StoreSource<K, V> 
 }
 
 fun <K, V> Store<K, V>.observeOn(scheduler: Scheduler): Store<K, V> {
-	val scheduled: StoreSource<K, V> = (this as StoreSource<K, V>).observeOn(scheduler)
-
 	return object : Store<K, V>,
-			StoreSource<K, V> by scheduled,
+			StoreSource<K, V> by ScheduledStoreSource(this, scheduler),
 			StoreSink<K, V> by this {}
 }
