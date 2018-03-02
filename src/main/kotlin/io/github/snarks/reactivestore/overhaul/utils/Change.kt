@@ -25,6 +25,10 @@ sealed class ImmediateChange<T> : Change<T>() {
 	override fun transform(fn: (ImmediateChange<T>) -> Change<T>): Change<T> = fn(this)
 }
 
+sealed class ImmediateAction<T> : ImmediateChange<T>() {
+	abstract fun toStatus(prev: Status<T>): Status<T>
+}
+
 // ------------------------------------------------------------------------------------------------------------------ //
 
 object NoChange : ImmediateChange<Nothing>() {
@@ -33,15 +37,21 @@ object NoChange : ImmediateChange<Nothing>() {
 	override fun toString(): String = "NoChange"
 }
 
-object ClearValue : ImmediateChange<Nothing>() {
+object ClearValue : ImmediateAction<Nothing>() {
 	operator fun <T> invoke(): ImmediateChange<T> = @Suppress("UNCHECKED_CAST") (this as ImmediateChange<T>)
 
 	override fun toString(): String = "Clear"
+
+	override fun toStatus(prev: Status<Nothing>): Status<Nothing> = Empty
 }
 
-data class SetValue<T>(val newValue: T) : ImmediateChange<T>()
+data class SetValue<T>(val newValue: T) : ImmediateAction<T>() {
+	override fun toStatus(prev: Status<T>): Status<T> = Loaded(newValue)
+}
 
-data class Fail<T>(val error: Throwable) : ImmediateChange<T>()
+data class Fail<T>(val error: Throwable) : ImmediateAction<T>() {
+	override fun toStatus(prev: Status<T>): Status<T> = Failed(error, prev)
+}
 
 data class Defer<T>(val future: Single<Updater<T>>, val ignoreIfUpdated: Boolean = true) : Change<T>() {
 
