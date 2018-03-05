@@ -99,3 +99,35 @@ fun <T : Any> CacheSink<T>.reload(customLoader: Loader<T>? = null, ignoreIfUpdat
 fun <T : Any> CacheSink<T>.revert() {
 	update(Updater.revert())
 }
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Mapping Functions
+
+/**
+ * Creates a new `CacheSink` based from this sink and the given transformation function
+ *
+ * @see Updater.transform
+ */
+inline fun <T : Any, R : Any> CacheSink<T>.transformUpdates(crossinline fn: (Change<R>) -> Change<T>): CacheSink<R> {
+	val orig = this
+	return object : CacheSink<R> {
+		override fun update(updater: Updater<R>) = orig.update(updater.transform(fn))
+	}
+}
+
+/**
+ * Creates a new `CacheSink` based from this sink and the given mapping function
+ *
+ * @see Updater.flatMap
+ * @see Change.flatMap
+ */
+inline fun <T : Any, R : Any> CacheSink<T>.flatMapUpdates(crossinline fn: (R?) -> Change<T>): CacheSink<R> {
+	return transformUpdates { change -> change.flatMap { fn(it) } }
+}
+
+/**
+ * Creates a new `CacheSink` based from this sink and the given
+ */
+inline fun <T : Any, R : Any> CacheSink<T>.mapUpdates(crossinline fn: (R?) -> T?): CacheSink<R> {
+	return transformUpdates { it.map(fn) }
+}
