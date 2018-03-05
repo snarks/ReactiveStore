@@ -18,7 +18,7 @@ package io.github.snarks.reactivestore.utils
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-sealed class Status<T> {
+sealed class Status<out T> {
 	abstract val lastContent: ContentStatus<T>
 
 	abstract fun <R> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R>
@@ -30,35 +30,33 @@ sealed class Status<T> {
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-sealed class ResultStatus<T> : Status<T>() {
+sealed class ResultStatus<out T> : Status<T>() {
 	override fun <R> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R> = fn(this)
 }
 
-sealed class ContentStatus<T> : ResultStatus<T>() {
+sealed class ContentStatus<out T> : ResultStatus<T>() {
 	override val lastContent: ContentStatus<T> get() = this
 }
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
 object Empty : ContentStatus<Nothing>() {
-	operator fun <T> invoke(): ContentStatus<T> = @Suppress("UNCHECKED_CAST") (this as ContentStatus<T>)
-
 	override fun toString(): String = "Empty"
 
-	override fun <R> flatMap(fn: (Nothing) -> Status<R>): Status<R> = Empty()
+	override fun <R> flatMap(fn: (Nothing) -> Status<R>): Status<R> = Empty
 }
 
-data class Loaded<T>(val value: T) : ContentStatus<T>() {
+data class Loaded<out T>(val value: T) : ContentStatus<T>() {
 	override fun <R> flatMap(fn: (T) -> Status<R>): Status<R> = fn(value)
 }
 
-data class Failed<T>(val error: Throwable, override val lastContent: ContentStatus<T>) : ResultStatus<T>() {
+data class Failed<out T>(val error: Throwable, override val lastContent: ContentStatus<T>) : ResultStatus<T>() {
 	constructor(error: Throwable, prev: Status<T>) : this(error, prev.lastContent)
 
 	override fun <R> flatMap(fn: (T) -> Status<R>): Status<R> = Failed(error, lastContent.flatMap(fn))
 }
 
-data class Loading<T>(override val lastContent: ContentStatus<T>) : Status<T>() {
+data class Loading<out T>(override val lastContent: ContentStatus<T>) : Status<T>() {
 
 	constructor(prev: Status<T>) : this(prev.lastContent)
 

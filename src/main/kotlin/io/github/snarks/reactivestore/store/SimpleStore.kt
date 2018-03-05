@@ -40,7 +40,7 @@ class SimpleStore<K, V>(
 		return makeSingle { map.asSequence().associate { (k, v) -> k to v.status } }
 	}
 
-	override fun currentFor(key: K): Single<Status<V>> = makeSingle { map[key]?.status ?: Empty() }
+	override fun currentFor(key: K): Single<Status<V>> = makeSingle { map[key]?.status ?: Empty }
 
 	override fun currentKeys(): Single<Set<K>> = makeSingle { map.keys.toSet() }
 

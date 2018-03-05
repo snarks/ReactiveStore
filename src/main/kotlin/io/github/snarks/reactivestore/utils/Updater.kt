@@ -17,35 +17,35 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
-typealias UpdateCondition<T> = (current: Status<T>, default: Loader<T>) -> Boolean
+interface Updater<out T> {
 
-interface Updater<T> {
-
-	fun applyUpdate(current: Status<T>, default: Loader<T>): Change<T>
+	fun applyUpdate(current: Status<*>): Change<T>
 
 	companion object {
 		// ---------------------------------------------------------------------------------------------------------- //
 		// Lambda Constructor
 
-		inline operator fun <T> invoke(crossinline applyUpdate: (Status<T>, Loader<T>) -> Change<T>): Updater<T> {
+		inline operator fun <T> invoke(crossinline applyUpdate: (Status<*>) -> Change<T>): Updater<T> {
 			return object : Updater<T> {
-				override fun applyUpdate(current: Status<T>, default: Loader<T>) = applyUpdate(current, default)
+				override fun applyUpdate(current: Status<*>): Change<T> = applyUpdate(current)
 			}
 		}
 
 		// ---------------------------------------------------------------------------------------------------------- //
 		// Direct Change
 
-		fun <T> change(change: Change<T>): Updater<T> = Updater { _, _ -> change }
+		fun <T> change(change: Change<T>): Updater<T> = Updater { change }
 
-		fun <T> clear(): Updater<T> = change(ClearValue())
+		fun <T> clear(): Updater<T> = change(ClearValue)
 
 		fun <T> set(newValue: T): Updater<T> = change(SetValue(newValue))
 
 		fun <T> fail(error: Throwable): Updater<T> = change(Fail(error))
 
-		inline fun <T> changeIf(change: Change<T>, crossinline condition: UpdateCondition<T>): Updater<T> {
-			return Updater { current, default -> if (condition(current, default)) change else NoChange() }
+		fun <T> revert(): Updater<T> = change(Revert)
+
+		inline fun <T> changeIf(change: Change<T>, crossinline condition: (current: Status<*>) -> Boolean): Updater<T> {
+			return Updater { current -> if (condition(current)) change else NoChange }
 		}
 
 		// ---------------------------------------------------------------------------------------------------------- //
@@ -58,7 +58,7 @@ interface Updater<T> {
 		inline fun <T> fromLoader(
 				loader: Loader<T>,
 				ignoreIfUpdated: Boolean = true,
-				crossinline condition: UpdateCondition<T> = { _, _ -> true }): Updater<T> {
+				crossinline condition: (current: Status<*>) -> Boolean = { true }): Updater<T> {
 
 			return defer(loader.asFutureUpdater(condition), ignoreIfUpdated)
 		}
@@ -66,39 +66,20 @@ interface Updater<T> {
 		inline fun <T> loadIf(
 				customLoader: Loader<T>? = null,
 				ignoreIfUpdated: Boolean = true,
-				crossinline condition: UpdateCondition<T>): Updater<T> {
+				crossinline condition: (current: Status<*>) -> Boolean): Updater<T> {
 
-			return Updater { _, default ->
-				val future = (customLoader ?: default).asFutureUpdater(condition)
-				Defer(future, ignoreIfUpdated)
-			}
+			val futureUpdater = customLoader?.asFutureUpdater(condition)
+			val change = Defer(futureUpdater, ignoreIfUpdated)
+
+			return changeIf(change, condition)
 		}
 
 		fun <T> autoLoad(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
-			return loadIf(customLoader, ignoreIfUpdated) { c, _ -> c == Empty || c is Failed }
+			return loadIf(customLoader, ignoreIfUpdated) { it == Empty || it is Failed }
 		}
 
 		fun <T> reload(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
-			return loadIf(customLoader, ignoreIfUpdated) { current, _ -> current !is Loading }
+			return loadIf(customLoader, ignoreIfUpdated) { it !is Loading }
 		}
-
-		// ---------------------------------------------------------------------------------------------------------- //
-		// Status Reversion
-
-		inline fun <T> revertIf(crossinline condition: UpdateCondition<T>): Updater<T> {
-			return Updater { current, default ->
-				if (condition(current, default)) {
-					val lastContent = current.lastContent
-					when (lastContent) {
-						Empty -> ClearValue()
-						is Loaded -> SetValue(lastContent.value)
-					}
-				} else NoChange()
-			}
-		}
-
-		fun <T> cancelLoad(): Updater<T> = revertIf { current, _ -> current is Loading }
-
-		fun <T> resetError(): Updater<T> = revertIf { current, _ -> current is Failed }
 	}
 }

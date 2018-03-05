@@ -17,45 +17,45 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
-sealed class Change<T> {
-	abstract fun transform(fn: (ImmediateChange<T>) -> Change<T>): Change<T>
-}
+// TODO change <T> -> <T : Any>
 
-sealed class ImmediateChange<T> : Change<T>() {
-	override fun transform(fn: (ImmediateChange<T>) -> Change<T>): Change<T> = fn(this)
-}
+sealed class Change<out T>
 
-sealed class ImmediateAction<T> : ImmediateChange<T>() {
-	abstract fun toStatus(prev: Status<T>): Status<T>
-}
+sealed class ImmediateChange<out T> : Change<T>()
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
 object NoChange : ImmediateChange<Nothing>() {
-	operator fun <T> invoke(): ImmediateChange<T> = @Suppress("UNCHECKED_CAST") (this as ImmediateChange<T>)
-
 	override fun toString(): String = "NoChange"
 }
 
-object ClearValue : ImmediateAction<Nothing>() {
-	operator fun <T> invoke(): ImmediateChange<T> = @Suppress("UNCHECKED_CAST") (this as ImmediateChange<T>)
-
+object ClearValue : ImmediateChange<Nothing>() {
 	override fun toString(): String = "Clear"
-
-	override fun toStatus(prev: Status<Nothing>): Status<Nothing> = Empty
 }
 
-data class SetValue<T>(val newValue: T) : ImmediateAction<T>() {
-	override fun toStatus(prev: Status<T>): Status<T> = Loaded(newValue)
+data class SetValue<out T>(val newValue: T) : ImmediateChange<T>()
+
+data class Fail<out T>(val error: Throwable) : ImmediateChange<T>()
+
+object Revert : ImmediateChange<Nothing>() {
+	override fun toString(): String = "Revert"
 }
 
-data class Fail<T>(val error: Throwable) : ImmediateAction<T>() {
-	override fun toStatus(prev: Status<T>): Status<T> = Failed(error, prev)
-}
+data class Defer<out T>(val future: Single<out Updater<T>>?, val ignoreIfUpdated: Boolean = true) : Change<T>()
 
-data class Defer<T>(val future: Single<Updater<T>>, val ignoreIfUpdated: Boolean = true) : Change<T>() {
+// ------------------------------------------------------------------------------------------------------------------ //
 
-	override fun transform(fn: (ImmediateChange<T>) -> Change<T>): Change<T> {
-		return Defer(future.map { Updater<T> { c, d -> it.applyUpdate(c, d).transform(fn) } }, ignoreIfUpdated)
+fun <T> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
+	return when (this) {
+		NoChange -> null
+		ClearValue -> Empty
+		is SetValue -> Loaded(newValue)
+		is Fail -> Failed(error, prev)
+		Revert -> when (prev) {
+			is Loading -> prev.lastContent
+			is Failed -> prev.lastContent
+			else -> null
+		}
+		is Defer -> Loading(prev)
 	}
 }

@@ -20,7 +20,7 @@ import io.github.snarks.reactivestore.utils.Keyed
 import io.github.snarks.reactivestore.utils.Loader
 import io.github.snarks.reactivestore.utils.Updater
 
-interface StoreSink<in K, V> {
+interface StoreSink<in K, in V> {
 	fun update(key: K, updater: Updater<V>)
 }
 
@@ -72,10 +72,8 @@ fun <K, V> StoreSink<K, V>.reload(
 	update(key, Updater.reload(customLoader, ignoreIfUpdated))
 }
 
-fun <K, V> StoreSink<K, V>.cancelLoad(key: K) {
-	update(key, Updater.cancelLoad())
+fun <K, V> StoreSink<K, V>.revert(key: K) {
+	update(key, Updater.revert())
 }
 
-fun <K, V> StoreSink<K, V>.resetError(key: K) {
-	update(key, Updater.resetError())
-}
+// TODO mapping functions
