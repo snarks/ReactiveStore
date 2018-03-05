@@ -36,9 +36,9 @@ interface Updater<out T : Any> {
 
 		fun <T : Any> change(change: Change<T>): Updater<T> = Updater { change }
 
-		fun <T : Any> clear(): Updater<T> = change(ClearValue)
+		fun <T : Any> clear(): Updater<T> = set(null)
 
-		fun <T : Any> set(newValue: T): Updater<T> = change(SetValue(newValue))
+		fun <T : Any> set(newValue: T?): Updater<T> = change(SetValue(newValue))
 
 		fun <T : Any> fail(error: Throwable): Updater<T> = change(Fail(error))
 

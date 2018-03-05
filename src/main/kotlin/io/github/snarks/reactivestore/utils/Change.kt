@@ -27,11 +27,7 @@ object NoChange : ImmediateChange<Nothing>() {
 	override fun toString(): String = "NoChange"
 }
 
-object ClearValue : ImmediateChange<Nothing>() {
-	override fun toString(): String = "Clear"
-}
-
-data class SetValue<out T : Any>(val newValue: T) : ImmediateChange<T>()
+data class SetValue<out T : Any>(val newValue: T?) : ImmediateChange<T>()
 
 data class Fail<out T : Any>(val error: Throwable) : ImmediateChange<T>()
 
@@ -46,8 +42,7 @@ data class Defer<out T : Any>(val future: Single<out Updater<T>>?, val ignoreIfU
 fun <T : Any> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
 	return when (this) {
 		NoChange -> null
-		ClearValue -> Empty
-		is SetValue -> Loaded(newValue)
+		is SetValue -> if (newValue == null) Empty else Loaded(newValue)
 		is Fail -> Failed(error, prev)
 		Revert -> when (prev) {
 			is Loading -> prev.lastContent

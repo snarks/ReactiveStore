@@ -24,7 +24,7 @@ typealias Loader<T> = Maybe<T>
 typealias LoadSource<T> = MaybeSource<T>
 
 fun <T : Any> Loader<T>.asFutureChange(): Single<ImmediateChange<T>> = map<ImmediateChange<T>> { SetValue(it) }
-		.toSingle(ClearValue)
+		.toSingle(SetValue(null))
 		.onErrorReturn { Fail(it) }
 
 fun <T : Any> Loader<T>.asFutureUpdater(): Single<Updater<T>> = asFutureChange().map { Updater.change(it) }
