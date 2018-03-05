@@ -85,3 +85,18 @@ interface Updater<out T : Any> {
 		}
 	}
 }
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Mapping Functions
+
+inline fun <T : Any, R : Any> Updater<T>.transform(crossinline fn: (Change<T>) -> Change<R>): Updater<R> {
+	return Updater { fn(applyUpdate(it)) }
+}
+
+inline fun <T : Any, R : Any> Updater<T>.flatMap(crossinline fn: (T?) -> Change<R>): Updater<R> {
+	return transform { change -> change.flatMap { fn(it) } }
+}
+
+inline fun <T : Any, R : Any> Updater<T>.map(crossinline fn: (T?) -> R?): Updater<R> {
+	return transform { it.map(fn) }
+}

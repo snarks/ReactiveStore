@@ -17,27 +17,41 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
-sealed class Change<out T : Any>
+sealed class Change<out T : Any> {
+	abstract fun <R : Any> flatMap(fn: (T?) -> Change<R>): Change<R>
+}
 
 sealed class ImmediateChange<out T : Any> : Change<T>()
 
 // ------------------------------------------------------------------------------------------------------------------ //
+// Implementations
 
 object NoChange : ImmediateChange<Nothing>() {
 	override fun toString(): String = "NoChange"
+	override fun <R : Any> flatMap(fn: (Nothing?) -> Change<R>): Change<R> = this
 }
 
-data class SetValue<out T : Any>(val newValue: T?) : ImmediateChange<T>()
+data class SetValue<out T : Any>(val newValue: T?) : ImmediateChange<T>() {
+	override fun <R : Any> flatMap(fn: (T?) -> Change<R>): Change<R> = fn(newValue)
+}
 
-data class Fail<out T : Any>(val error: Throwable) : ImmediateChange<T>()
+data class Fail(val error: Throwable) : ImmediateChange<Nothing>() {
+	override fun <R : Any> flatMap(fn: (Nothing?) -> Change<R>): Change<R> = this
+}
 
 object Revert : ImmediateChange<Nothing>() {
 	override fun toString(): String = "Revert"
+	override fun <R : Any> flatMap(fn: (Nothing?) -> Change<R>): Change<R> = this
 }
 
-data class Defer<out T : Any>(val future: Single<out Updater<T>>?, val ignoreIfUpdated: Boolean = true) : Change<T>()
+data class Defer<out T : Any>(val future: Single<out Updater<T>>?, val ignoreIfUpdated: Boolean = true) : Change<T>() {
+	override fun <R : Any> flatMap(fn: (T?) -> Change<R>): Change<R> {
+		return Defer(future?.map { u -> Updater { u.applyUpdate(it).flatMap(fn) } }, ignoreIfUpdated)
+	}
+}
 
 // ------------------------------------------------------------------------------------------------------------------ //
+// Transition
 
 fun <T : Any> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
 	return when (this) {
@@ -52,3 +66,8 @@ fun <T : Any> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
 		is Defer -> Loading(prev)
 	}
 }
+
+// ------------------------------------------------------------------------------------------------------------------ //
+// Mapping Functions
+
+inline fun <T : Any, R : Any> Change<T>.map(crossinline fn: (T?) -> R?): Change<R> = flatMap { SetValue(fn(it)) }
