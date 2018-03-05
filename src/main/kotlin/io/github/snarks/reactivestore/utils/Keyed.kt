@@ -23,10 +23,8 @@ interface Keyed<out K : Any> {
 
 data class KeyPair<out K : Any, out V : Any>(override val key: K, override val value: V) : Keyed<K>, Map.Entry<K, V>
 
-// FIXME KeyStatus should implement Keyed
+typealias KeyStatus<K, V> = KeyPair<K, Status<V>>
 
-typealias KeyStatus<K, V> = Map.Entry<K, Status<V>>
-
-fun <K : Any, V : Any> Observable<Map.Entry<K, V>>.withKey(key: K): Observable<V> {
+fun <K : Any, V : Any> Observable<KeyPair<K, V>>.withKey(key: K): Observable<V> {
 	return filter { (k, _) -> k == key }.map { (_, v) -> v }
 }
