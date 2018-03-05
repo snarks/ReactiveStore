@@ -19,6 +19,8 @@ import io.reactivex.Single
 
 sealed class Change<out T : Any> {
 	abstract fun <R : Any> flatMap(fn: (T?) -> Change<R>): Change<R>
+
+	inline fun <R : Any> map(crossinline fn: (T?) -> R?): Change<R> = flatMap { SetValue(fn(it)) }
 }
 
 sealed class ImmediateChange<out T : Any> : Change<T>()
@@ -66,8 +68,3 @@ fun <T : Any> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
 		is Defer -> Loading(prev)
 	}
 }
-
-// ------------------------------------------------------------------------------------------------------------------ //
-// Mapping Functions
-
-inline fun <T : Any, R : Any> Change<T>.map(crossinline fn: (T?) -> R?): Change<R> = flatMap { SetValue(fn(it)) }
