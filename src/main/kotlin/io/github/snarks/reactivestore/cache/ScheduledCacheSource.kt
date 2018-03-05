@@ -35,12 +35,13 @@ class ScheduledCacheSource<T : Any>(
 	private fun <T> Observable<T>.applyScheduler() = observeOn(observeOn)
 }
 
+// ------------------------------------------------------------------------------------------------------------------ //
+// Extensions
+
 fun <T : Any> CacheSource<T>.observeOn(scheduler: Scheduler): CacheSource<T> {
 	return ScheduledCacheSource(this, scheduler)
 }
 
 fun <T : Any> Cache<T>.observeOn(scheduler: Scheduler): Cache<T> {
-	return object : Cache<T>,
-			CacheSource<T> by ScheduledCacheSource(this, scheduler),
-			CacheSink<T> by this {}
+	return Cache.from(this, ScheduledCacheSource(this, scheduler))
 }
