@@ -22,7 +22,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
-interface CacheSource<T> {
+interface CacheSource<T : Any> {
 
 	fun current(): Single<Status<T>>
 
@@ -31,11 +31,11 @@ interface CacheSource<T> {
 	fun observe(): Observable<Status<T>> = updates().startWith(current().toObservable())
 }
 
-fun <T> CacheSource<T>.currentValue(): Maybe<T> = current().contentValue()
+fun <T : Any> CacheSource<T>.currentValue(): Maybe<T> = current().contentValue()
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-inline fun <T, R> CacheSource<T>.transform(crossinline fn: (Status<T>) -> Status<R>): CacheSource<R> {
+inline fun <T : Any, R : Any> CacheSource<T>.transform(crossinline fn: (Status<T>) -> Status<R>): CacheSource<R> {
 	val orig = this
 
 	return object : CacheSource<R> {
@@ -45,6 +45,6 @@ inline fun <T, R> CacheSource<T>.transform(crossinline fn: (Status<T>) -> Status
 	}
 }
 
-fun <T, R> CacheSource<T>.flatMap(fn: (T) -> Status<R>): CacheSource<R> = transform { it.flatMap(fn) }
+fun <T : Any, R : Any> CacheSource<T>.flatMap(fn: (T) -> Status<R>): CacheSource<R> = transform { it.flatMap(fn) }
 
-fun <T, R> CacheSource<T>.map(fn: (T) -> R): CacheSource<R> = flatMap { Loaded(fn(it)) }
+fun <T : Any, R : Any> CacheSource<T>.map(fn: (T) -> R): CacheSource<R> = flatMap { Loaded(fn(it)) }

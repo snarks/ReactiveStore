@@ -23,7 +23,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
-class SimpleCache<T>(
+class SimpleCache<T : Any>(
 		public override val loader: Loader<T> = Loader.empty(),
 		public override val scheduler: Scheduler = Schedulers.single()) : AbstractCacheSink<T>(), Cache<T> {
 

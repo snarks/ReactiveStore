@@ -23,7 +23,7 @@ import io.reactivex.disposables.Disposable
 /**
  * Provides a skeletal implementation of the CacheSink interface
  */
-abstract class AbstractCacheSink<T> : CacheSink<T> {
+abstract class AbstractCacheSink<T : Any> : CacheSink<T> {
 
 	/**
 	 * Where [update] operations will be done on.
@@ -92,7 +92,7 @@ abstract class AbstractCacheSink<T> : CacheSink<T> {
 	 * This holds both the current [Status] and, possibly, a [disposer] which will be invoked when this holder is
 	 * replaced with another.
 	 */
-	data class Holder<out T>(val status: Status<T>, internal val disposer: Disposable?) {
+	data class Holder<out T : Any>(val status: Status<T>, internal val disposer: Disposable?) {
 		/** Creates a default instance with an [Empty] status */
 		constructor() : this(Empty, null)
 	}

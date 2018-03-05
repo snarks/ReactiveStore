@@ -21,9 +21,9 @@ import io.github.snarks.reactivestore.utils.Updater
 import io.reactivex.Observable
 import io.reactivex.Single
 
-interface Store<K, V> : StoreSink<K, V>, StoreSource<K, V>
+interface Store<K : Any, V : Any> : StoreSink<K, V>, StoreSource<K, V>
 
-fun <K, V> Store<K, V>.cacheFor(key: K): Cache<V> {
+fun <K : Any, V : Any> Store<K, V>.cacheFor(key: K): Cache<V> {
 	return object : Cache<V> {
 		override fun update(updater: Updater<V>) = update(key, updater)
 		override fun current(): Single<Status<V>> = currentFor(key)

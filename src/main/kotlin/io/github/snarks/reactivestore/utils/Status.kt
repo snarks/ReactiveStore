@@ -18,23 +18,23 @@ package io.github.snarks.reactivestore.utils
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-sealed class Status<out T> {
+sealed class Status<out T : Any> {
 	abstract val lastContent: ContentStatus<T>
 
-	abstract fun <R> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R>
+	abstract fun <R : Any> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R>
 
-	abstract fun <R> flatMap(fn: (T) -> Status<R>): Status<R>
+	abstract fun <R : Any> flatMap(fn: (T) -> Status<R>): Status<R>
 
-	fun <R> map(fn: (T) -> R): Status<R> = flatMap { Loaded(fn(it)) }
+	fun <R : Any> map(fn: (T) -> R): Status<R> = flatMap { Loaded(fn(it)) }
 }
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-sealed class ResultStatus<out T> : Status<T>() {
-	override fun <R> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R> = fn(this)
+sealed class ResultStatus<out T : Any> : Status<T>() {
+	override fun <R : Any> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R> = fn(this)
 }
 
-sealed class ContentStatus<out T> : ResultStatus<T>() {
+sealed class ContentStatus<out T : Any> : ResultStatus<T>() {
 	override val lastContent: ContentStatus<T> get() = this
 }
 
@@ -43,33 +43,33 @@ sealed class ContentStatus<out T> : ResultStatus<T>() {
 object Empty : ContentStatus<Nothing>() {
 	override fun toString(): String = "Empty"
 
-	override fun <R> flatMap(fn: (Nothing) -> Status<R>): Status<R> = Empty
+	override fun <R : Any> flatMap(fn: (Nothing) -> Status<R>): Status<R> = Empty
 }
 
-data class Loaded<out T>(val value: T) : ContentStatus<T>() {
-	override fun <R> flatMap(fn: (T) -> Status<R>): Status<R> = fn(value)
+data class Loaded<out T : Any>(val value: T) : ContentStatus<T>() {
+	override fun <R : Any> flatMap(fn: (T) -> Status<R>): Status<R> = fn(value)
 }
 
-data class Failed<out T>(val error: Throwable, override val lastContent: ContentStatus<T>) : ResultStatus<T>() {
+data class Failed<out T : Any>(val error: Throwable, override val lastContent: ContentStatus<T>) : ResultStatus<T>() {
 	constructor(error: Throwable, prev: Status<T>) : this(error, prev.lastContent)
 
-	override fun <R> flatMap(fn: (T) -> Status<R>): Status<R> = Failed(error, lastContent.flatMap(fn))
+	override fun <R : Any> flatMap(fn: (T) -> Status<R>): Status<R> = Failed(error, lastContent.flatMap(fn))
 }
 
-data class Loading<out T>(override val lastContent: ContentStatus<T>) : Status<T>() {
+data class Loading<out T : Any>(override val lastContent: ContentStatus<T>) : Status<T>() {
 
 	constructor(prev: Status<T>) : this(prev.lastContent)
 
-	override fun <R> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R> {
+	override fun <R : Any> transform(fn: (ResultStatus<T>) -> Status<R>): Status<R> {
 		return Loading(lastContent.transform(fn))
 	}
 
-	override fun <R> flatMap(fn: (T) -> Status<R>): Status<R> = transform { it.flatMap(fn) }
+	override fun <R : Any> flatMap(fn: (T) -> Status<R>): Status<R> = transform { it.flatMap(fn) }
 }
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-fun <T> Single<Status<T>>.contentValue(): Maybe<T> = flatMapMaybe {
+fun <T : Any> Single<Status<T>>.contentValue(): Maybe<T> = flatMapMaybe {
 	val content = it.lastContent
 	when (content) {
 		Empty -> Maybe.empty()

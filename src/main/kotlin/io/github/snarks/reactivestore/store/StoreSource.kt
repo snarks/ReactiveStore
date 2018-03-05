@@ -21,7 +21,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
-interface StoreSource<K, V> {
+interface StoreSource<K : Any, V : Any> {
 
 	fun current(): Single<Map<K, Status<V>>>
 
@@ -40,7 +40,7 @@ interface StoreSource<K, V> {
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-fun <K, V> StoreSource<K, V>.currentValues(): Single<Collection<V>> {
+fun <K : Any, V : Any> StoreSource<K, V>.currentValues(): Single<Collection<V>> {
 	return currentStatuses().map {
 		it.asSequence().flatMap {
 			val content = it.lastContent
@@ -52,9 +52,9 @@ fun <K, V> StoreSource<K, V>.currentValues(): Single<Collection<V>> {
 	}
 }
 
-fun <K, V> StoreSource<K, V>.currentValueFor(key: K): Maybe<V> = currentFor(key).contentValue()
+fun <K : Any, V : Any> StoreSource<K, V>.currentValueFor(key: K): Maybe<V> = currentFor(key).contentValue()
 
-fun <K, V> StoreSource<K, V>.cacheSourceFor(key: K): CacheSource<V> {
+fun <K : Any, V : Any> StoreSource<K, V>.cacheSourceFor(key: K): CacheSource<V> {
 	return object : CacheSource<V> {
 		override fun current(): Single<Status<V>> = currentFor(key)
 		override fun updates(): Observable<Status<V>> = updatesFor(key)
@@ -64,7 +64,9 @@ fun <K, V> StoreSource<K, V>.cacheSourceFor(key: K): CacheSource<V> {
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-inline fun <K, V, R> StoreSource<K, V>.transform(crossinline fn: (Status<V>) -> Status<R>): StoreSource<K, R> {
+inline fun <K : Any, V : Any, R : Any> StoreSource<K, V>.transform(
+		crossinline fn: (Status<V>) -> Status<R>): StoreSource<K, R> {
+
 	val orig = this
 	return object : StoreSource<K, R> {
 		override fun current(): Single<Map<K, Status<R>>> {
@@ -87,6 +89,10 @@ inline fun <K, V, R> StoreSource<K, V>.transform(crossinline fn: (Status<V>) -> 
 	}
 }
 
-fun <K, V, R> StoreSource<K, V>.flatMap(fn: (V) -> Status<R>): StoreSource<K, R> = transform { it.flatMap(fn) }
+fun <K : Any, V : Any, R : Any> StoreSource<K, V>.flatMap(fn: (V) -> Status<R>): StoreSource<K, R> {
+	return transform { it.flatMap(fn) }
+}
 
-fun <K, V, R> StoreSource<K, V>.map(fn: (V) -> R): StoreSource<K, R> = flatMap { Loaded(fn(it)) }
+fun <K : Any, V : Any, R : Any> StoreSource<K, V>.map(fn: (V) -> R): StoreSource<K, R> {
+	return flatMap { Loaded(fn(it)) }
+}

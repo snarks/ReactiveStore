@@ -21,7 +21,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 
-class ScheduledStoreSource<K, V>(
+class ScheduledStoreSource<K : Any, V : Any>(
 		private val original: StoreSource<K, V>,
 		private val observeOn: Scheduler) : StoreSource<K, V> {
 
@@ -44,11 +44,11 @@ class ScheduledStoreSource<K, V>(
 	private fun <T> Observable<T>.applyScheduler() = observeOn(observeOn)
 }
 
-fun <K, V> StoreSource<K, V>.observeOn(scheduler: Scheduler): StoreSource<K, V> {
+fun <K : Any, V : Any> StoreSource<K, V>.observeOn(scheduler: Scheduler): StoreSource<K, V> {
 	return ScheduledStoreSource(this, scheduler)
 }
 
-fun <K, V> Store<K, V>.observeOn(scheduler: Scheduler): Store<K, V> {
+fun <K : Any, V : Any> Store<K, V>.observeOn(scheduler: Scheduler): Store<K, V> {
 	return object : Store<K, V>,
 			StoreSource<K, V> by ScheduledStoreSource(this, scheduler),
 			StoreSink<K, V> by this {}

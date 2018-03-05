@@ -15,4 +15,4 @@
  */
 package io.github.snarks.reactivestore.cache
 
-interface Cache<T> : CacheSink<T>, CacheSource<T>
+interface Cache<T : Any> : CacheSink<T>, CacheSource<T>

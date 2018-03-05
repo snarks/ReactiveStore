@@ -17,7 +17,7 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
-interface Updater<out T> {
+interface Updater<out T : Any> {
 
 	fun applyUpdate(current: Status<*>): Change<T>
 
@@ -25,7 +25,7 @@ interface Updater<out T> {
 		// ---------------------------------------------------------------------------------------------------------- //
 		// Lambda Constructor
 
-		inline operator fun <T> invoke(crossinline applyUpdate: (Status<*>) -> Change<T>): Updater<T> {
+		inline operator fun <T : Any> invoke(crossinline applyUpdate: (Status<*>) -> Change<T>): Updater<T> {
 			return object : Updater<T> {
 				override fun applyUpdate(current: Status<*>): Change<T> = applyUpdate(current)
 			}
@@ -34,28 +34,30 @@ interface Updater<out T> {
 		// ---------------------------------------------------------------------------------------------------------- //
 		// Direct Change
 
-		fun <T> change(change: Change<T>): Updater<T> = Updater { change }
+		fun <T : Any> change(change: Change<T>): Updater<T> = Updater { change }
 
-		fun <T> clear(): Updater<T> = change(ClearValue)
+		fun <T : Any> clear(): Updater<T> = change(ClearValue)
 
-		fun <T> set(newValue: T): Updater<T> = change(SetValue(newValue))
+		fun <T : Any> set(newValue: T): Updater<T> = change(SetValue(newValue))
 
-		fun <T> fail(error: Throwable): Updater<T> = change(Fail(error))
+		fun <T : Any> fail(error: Throwable): Updater<T> = change(Fail(error))
 
-		fun <T> revert(): Updater<T> = change(Revert)
+		fun <T : Any> revert(): Updater<T> = change(Revert)
 
-		inline fun <T> changeIf(change: Change<T>, crossinline condition: (current: Status<*>) -> Boolean): Updater<T> {
+		inline fun <T : Any> changeIf(
+				change: Change<T>,
+				crossinline condition: (current: Status<*>) -> Boolean): Updater<T> {
 			return Updater { current -> if (condition(current)) change else NoChange }
 		}
 
 		// ---------------------------------------------------------------------------------------------------------- //
 		// Deferred Updates
 
-		fun <T> defer(futureUpdater: Single<Updater<T>>, ignoreIfUpdated: Boolean = true): Updater<T> {
+		fun <T : Any> defer(futureUpdater: Single<Updater<T>>, ignoreIfUpdated: Boolean = true): Updater<T> {
 			return change(Defer(futureUpdater, ignoreIfUpdated))
 		}
 
-		inline fun <T> fromLoader(
+		inline fun <T : Any> fromLoader(
 				loader: Loader<T>,
 				ignoreIfUpdated: Boolean = true,
 				crossinline condition: (current: Status<*>) -> Boolean = { true }): Updater<T> {
@@ -63,7 +65,7 @@ interface Updater<out T> {
 			return defer(loader.asFutureUpdater(condition), ignoreIfUpdated)
 		}
 
-		inline fun <T> loadIf(
+		inline fun <T : Any> loadIf(
 				customLoader: Loader<T>? = null,
 				ignoreIfUpdated: Boolean = true,
 				crossinline condition: (current: Status<*>) -> Boolean): Updater<T> {
@@ -74,11 +76,11 @@ interface Updater<out T> {
 			return changeIf(change, condition)
 		}
 
-		fun <T> autoLoad(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
+		fun <T : Any> autoLoad(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
 			return loadIf(customLoader, ignoreIfUpdated) { it == Empty || it is Failed }
 		}
 
-		fun <T> reload(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
+		fun <T : Any> reload(customLoader: Loader<T>? = null, ignoreIfUpdated: Boolean = true): Updater<T> {
 			return loadIf(customLoader, ignoreIfUpdated) { it !is Loading }
 		}
 	}
