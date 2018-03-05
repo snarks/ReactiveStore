@@ -22,7 +22,7 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.ofType
 import io.reactivex.schedulers.Schedulers
 
-class ListingStore<K, L, V : Keyed<K>> private constructor(
+class ListingStore<K : Any, L : Any, V : Keyed<K>> private constructor(
 		val mainStore: StoreSink<K, V>,
 		private val internal: SimpleStore<L, Collection<V>>) : Store<L, Collection<V>> by internal {
 
@@ -44,16 +44,16 @@ class ListingStore<K, L, V : Keyed<K>> private constructor(
 	val scheduler: Scheduler get() = internal.scheduler
 }
 
-fun <K, L, V : Keyed<K>> StoreSink<K, V>.listing(
+fun <K : Any, L : Any, V : Keyed<K>> StoreSink<K, V>.listing(
 		loaderFactory: (L) -> Loader<Collection<V>>,
 		scheduler: Scheduler): Store<L, Collection<V>> {
 	return ListingStore(this, loaderFactory, scheduler)
 }
 
-fun <K, L, V : Keyed<K>> SimpleStore<K, V>.listing(
+fun <K : Any, L : Any, V : Keyed<K>> SimpleStore<K, V>.listing(
 		loaderFactory: (L) -> Loader<Collection<V>>,
 		scheduler: Scheduler = this.scheduler): Store<L, Collection<V>> {
 	return ListingStore(this, loaderFactory, scheduler)
 }
 
-// LATER listing for keypairs + sink.mapUpdater
+// TODO listing for keypairs + sink.mapUpdater

@@ -23,7 +23,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
-class SimpleStore<K, V>(
+class SimpleStore<K : Any, V : Any>(
 		val loaderFactory: (K) -> Loader<V> = { Loader.empty<V>() },
 		val scheduler: Scheduler = Schedulers.single()) : Store<K, V> {
 

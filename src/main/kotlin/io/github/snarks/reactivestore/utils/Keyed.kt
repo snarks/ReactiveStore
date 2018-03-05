@@ -17,14 +17,16 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Observable
 
-interface Keyed<out K> {
+interface Keyed<out K : Any> {
 	val key: K
 }
 
-data class KeyPair<out K, out V>(override val key: K, override val value: V) : Keyed<K>, Map.Entry<K, V>
+data class KeyPair<out K : Any, out V : Any>(override val key: K, override val value: V) : Keyed<K>, Map.Entry<K, V>
+
+// FIXME KeyStatus should implement Keyed
 
 typealias KeyStatus<K, V> = Map.Entry<K, Status<V>>
 
-fun <K, V> Observable<Map.Entry<K, V>>.withKey(key: K): Observable<V> {
+fun <K : Any, V : Any> Observable<Map.Entry<K, V>>.withKey(key: K): Observable<V> {
 	return filter { (k, _) -> k == key }.map { (_, v) -> v }
 }

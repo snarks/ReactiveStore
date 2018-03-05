@@ -17,11 +17,9 @@ package io.github.snarks.reactivestore.utils
 
 import io.reactivex.Single
 
-// TODO change <T> -> <T : Any>
+sealed class Change<out T : Any>
 
-sealed class Change<out T>
-
-sealed class ImmediateChange<out T> : Change<T>()
+sealed class ImmediateChange<out T : Any> : Change<T>()
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
@@ -29,27 +27,22 @@ object NoChange : ImmediateChange<Nothing>() {
 	override fun toString(): String = "NoChange"
 }
 
-object ClearValue : ImmediateChange<Nothing>() {
-	override fun toString(): String = "Clear"
-}
+data class SetValue<out T : Any>(val newValue: T?) : ImmediateChange<T>()
 
-data class SetValue<out T>(val newValue: T) : ImmediateChange<T>()
-
-data class Fail<out T>(val error: Throwable) : ImmediateChange<T>()
+data class Fail<out T : Any>(val error: Throwable) : ImmediateChange<T>()
 
 object Revert : ImmediateChange<Nothing>() {
 	override fun toString(): String = "Revert"
 }
 
-data class Defer<out T>(val future: Single<out Updater<T>>?, val ignoreIfUpdated: Boolean = true) : Change<T>()
+data class Defer<out T : Any>(val future: Single<out Updater<T>>?, val ignoreIfUpdated: Boolean = true) : Change<T>()
 
 // ------------------------------------------------------------------------------------------------------------------ //
 
-fun <T> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
+fun <T : Any> Change<T>.nextStatus(prev: Status<T>): Status<T>? {
 	return when (this) {
 		NoChange -> null
-		ClearValue -> Empty
-		is SetValue -> Loaded(newValue)
+		is SetValue -> if (newValue == null) Empty else Loaded(newValue)
 		is Fail -> Failed(error, prev)
 		Revert -> when (prev) {
 			is Loading -> prev.lastContent
