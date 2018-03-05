@@ -3,7 +3,7 @@ package io.github.snarks.reactivestore.cache
 import io.github.snarks.reactivestore.utils.Loader
 import io.github.snarks.reactivestore.utils.Updater
 
-interface CacheSink<T> {
+interface CacheSink<in T> {
 	fun update(updater: Updater<T>)
 }
 
@@ -27,10 +27,8 @@ fun <T> CacheSink<T>.reload(customLoader: Loader<T>? = null, ignoreIfUpdated: Bo
 	update(Updater.reload(customLoader, ignoreIfUpdated))
 }
 
-fun <T> CacheSink<T>.cancelLoad() {
-	update(Updater.cancelLoad())
+fun <T> CacheSink<T>.revert() {
+	update(Updater.revert())
 }
 
-fun <T> CacheSink<T>.resetError() {
-	update(Updater.resetError())
-}
+// TODO mapping functions

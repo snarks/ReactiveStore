@@ -1,11 +1,11 @@
 package io.github.snarks.reactivestore.cache
 
-import io.github.snarks.reactivestore.overhaul.utils.*
 import io.github.snarks.reactivestore.utils.*
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.plusAssign
+
+// TODO rename to AbstractCacheSink
 
 abstract class CacheState<T> : CacheSink<T> {
 
@@ -19,29 +19,36 @@ abstract class CacheState<T> : CacheSink<T> {
 
 	private fun updateImpl(updater: Updater<T>) {
 		val prevHolder = current
+
 		val prev = prevHolder.status
-		val change = updater.applyUpdate(prev, loader)
+		val change = updater.applyUpdate(prev)
+		val next = change.nextStatus(prev) ?: return // do nothing if no change happens
 
-		when (change) {
-			NoChange -> return
-			is Defer -> {
-				val disposables = CompositeDisposable()
+		prevHolder.disposer?.dispose()
 
-				prevHolder.disposable?.dispose()
-				current = Holder(Loading(prev), disposables.takeIf { change.ignoreIfUpdated })
+		val disposer = change.makeTaskDisposer()
 
-				disposables += change.future.observeOn(scheduler).subscribe(::updateImpl)
-			}
-			is ImmediateAction -> {
-				prevHolder.disposable?.dispose()
-				current = Holder(change.toStatus(prev), null)
-			}
-		}
+		val nextHolder = Holder(next, disposer)
+		current = nextHolder
+
+		if (change is Defer) startDeferredTask(change, disposer)
 	}
 
-	class Holder<T>(
-			val status: Status<T>,
-			val disposable: Disposable?) {
-		constructor() : this(Empty(), null)
+	private fun Change<T>.makeTaskDisposer(): CompositeDisposable? {
+		return if (this is Defer && ignoreIfUpdated) CompositeDisposable() else null
+	}
+
+	private fun startDeferredTask(defer: Defer<T>, disposables: CompositeDisposable?) {
+		val future = defer.future ?: loader.asFutureUpdater()
+
+		val subscription = future
+				.observeOn(scheduler)
+				.subscribe { u -> updateImpl(u) }
+
+		disposables?.add(subscription)
+	}
+
+	data class Holder<out T>(val status: Status<T>, internal val disposer: Disposable?) {
+		constructor() : this(Empty, null)
 	}
 }
