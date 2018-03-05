@@ -5,9 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-// TODO rename to AbstractCacheSink
-
-abstract class CacheState<T> : CacheSink<T> {
+abstract class AbstractCacheSink<T> : CacheSink<T> {
 
 	protected abstract val scheduler: Scheduler
 	protected abstract val loader: Loader<T>

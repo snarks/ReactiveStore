@@ -15,7 +15,7 @@
  */
 package io.github.snarks.reactivestore.store
 
-import io.github.snarks.reactivestore.cache.CacheState
+import io.github.snarks.reactivestore.cache.AbstractCacheSink
 import io.github.snarks.reactivestore.utils.*
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -27,7 +27,7 @@ class SimpleStore<K, V>(
 		val loaderFactory: (K) -> Loader<V> = { Loader.empty<V>() },
 		val scheduler: Scheduler = Schedulers.single()) : Store<K, V> {
 
-	private val map = mutableMapOf<K, CacheState.Holder<V>>()
+	private val map = mutableMapOf<K, AbstractCacheSink.Holder<V>>()
 	private val relay = PublishSubject.create<KeyStatus<K, V>>()
 
 	override fun update(key: K, updater: Updater<V>) {
@@ -46,7 +46,7 @@ class SimpleStore<K, V>(
 
 	override fun currentStatuses(): Single<Collection<Status<V>>> = makeSingle { map.values.map { it.status } }
 
-	private inner class State(val key: K) : CacheState<V>() {
+	private inner class State(val key: K) : AbstractCacheSink<V>() {
 		override val scheduler: Scheduler get() = this@SimpleStore.scheduler
 		override val loader: Loader<V> = loaderFactory(key)
 
