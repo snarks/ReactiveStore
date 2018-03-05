@@ -15,4 +15,12 @@
  */
 package io.github.snarks.reactivestore.cache
 
-interface Cache<T : Any> : CacheSink<T>, CacheSource<T>
+interface Cache<T : Any> : CacheSink<T>, CacheSource<T> {
+	companion object {
+		fun <T : Any> from(sink: CacheSink<T>, source: CacheSource<T>): Cache<T> {
+			return object : Cache<T>,
+					CacheSink<T> by sink,
+					CacheSource<T> by source {}
+		}
+	}
+}
