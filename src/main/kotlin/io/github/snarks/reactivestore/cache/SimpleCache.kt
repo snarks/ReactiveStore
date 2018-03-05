@@ -10,7 +10,7 @@ import io.reactivex.subjects.PublishSubject
 
 class SimpleCache<T>(
 		public override val loader: Loader<T> = Loader.empty(),
-		public override val scheduler: Scheduler = Schedulers.single()) : CacheState<T>(), Cache<T> {
+		public override val scheduler: Scheduler = Schedulers.single()) : AbstractCacheSink<T>(), Cache<T> {
 
 	private val relay = PublishSubject.create<Status<T>>()
 	override var current: Holder<T> = Holder()
